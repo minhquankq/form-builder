@@ -32,16 +32,27 @@ const fields = [
 				name: 'Name',
 				props: {
 						type: 'text',
-						placeholder: 'Enter username'
+						placeholder: 'Enter username',
+						value: 'vmquan'
 				}
 		}, {
-				component: 'Password',
+				component: 'Input',
 				id: 'password',
 				name: 'Password',
 				props: {
-						type: 'text',
-						placeholder: 'Enter username'
+						type: 'password',
+						placeholder: 'Enter password'
 				}
+		}, {
+				component: 'RichText',
+				id: 'content',
+				name: 'Content',
+				props: {}
+		}, {
+				component: 'Attachment',
+				id: 'attachment',
+				name: 'Attachment',
+				props: {}
 		}, {
 				component: "Input",
 				id: "description",
@@ -50,7 +61,7 @@ const fields = [
 						type: "textarea",
 						placeholder: 'Some information about you',
 						style: {
-								"height": "200px",
+								"height": "200px"
 						}
 				}
 		}, {
@@ -167,7 +178,7 @@ export default class ExampleFormBuilder extends Component {
 														type="textarea"
 														value={this.state.configStr}
 														style={{
-														height: "650px"
+														height: "425px"
 												}}
 														onChange={e => this.setState({configStr: e.target.value})}/>
 												<Button
@@ -178,7 +189,7 @@ export default class ExampleFormBuilder extends Component {
 														._reloadConfig
 														.bind(this)}>Reload configuration</Button>
 										</div>
-										<div className="col-md-4">
+										<div className="col-md-4 scrollbar">
 												<FormBuilder
 														fields={this.state.fields}
 														data={this.state.data}

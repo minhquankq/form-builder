@@ -3,7 +3,7 @@
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
+  animation: App-logo-spin infinite 5s linear;
   height: 80px;
 }
 
@@ -23,8 +23,12 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  /* from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); } */
+  0% {transform: rotate(0deg);}
+  25% {transform: rotate(150deg);}
+  50% {transform: rotate(300deg);}
+  100% {transform: rotate(360deg);}
 }
 
 .form-builder {
@@ -33,4 +37,10 @@
 
 .form-checkbox {
   margin-left: 1.25rem;
+}
+
+.scrollbar {
+	height: 470px;
+  overflow-y: scroll;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

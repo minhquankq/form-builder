@@ -94,7 +94,7 @@ class FormBuilder extends Component {
 		} else {
 			return (
 				<Alert color="warning" key={id}>
-					The component {component} is not supported! Please contact <a href="https://www.facebook.com/minhquankq" className="alert-link">QuanVM3</a> with a cup of coffee to define.
+					The component <b>{component}</b> is not supported! Please contact <a href="https://www.facebook.com/minhquankq" className="alert-link">QuanVM3</a> with a cup of coffee to define.
 				</Alert>
 			)
 		}

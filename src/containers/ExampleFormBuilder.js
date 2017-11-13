@@ -9,7 +9,9 @@ const fields = [
 				component: 'DateInput',
 				id: 'brithday',
 				name: 'Brithday',
-				props: {}
+				props: {
+					orientation:'vertical'
+				}
 		}, 
 		{
 				component: 'Input',
@@ -26,7 +28,7 @@ const fields = [
 								func: "email"
 						}, {
 								func: "minLength",
-								paramters: [10]
+								parameters: [10]
 						}
 				]
 		}, 

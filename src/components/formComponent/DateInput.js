@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { SingleDatePicker } from 'react-dates';
+import moment from 'moment'
+import _ from 'lodash'
 import {
 	FormGroup,
 	Label,
@@ -17,15 +19,20 @@ class DateInput extends Component {
 
 	render() {
 		let {input} =  this.props;
+		let value = input.value
+		if(_.isEmpty(value)) {
+			value = null;
+		} else if(typeof(value) === "string") {
+			value = moment(value)
+		}
 		return (
 			<FormGroup>
-				<Label for={this.props.id}>{this.props.label}</Label>
+				<Label>{this.props.label}</Label>
 				<FormGroup>
 					<SingleDatePicker
 						showClearDate={true}
 						showDefaultInputIcon={true}
-						orientation={'vertical'}
-						date={input.value}
+						date={value}
 						onDateChange={date => input.onChange(date)}
 						focused={this.state.focused}
 						onFocusChange={({ focused }) => this.setState({ focused })}
@@ -37,9 +44,9 @@ class DateInput extends Component {
 }
 
 DateInput.propTypes = {
-	id: PropTypes.string.isRequired,
-	name: PropTypes.string.isRequired,
-	onValueChange: PropTypes.func.isRequired
+	// id: PropTypes.string.isRequired,
+	label: PropTypes.string.isRequired,
+	// onValueChange: PropTypes.func.isRequired
 }
 
 export default DateInput

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import { Form, Alert } from 'reactstrap'
@@ -91,9 +92,15 @@ const validate = (values, props) => {
 	return errors;
 }
 
-FormBuilder = reduxForm({
-	form: 'formBuilder',
-	validate
-})(FormBuilder)
+// FormBuilder = reduxForm({
+// 	form: 'formBuilder',
+// 	validate
+// })(FormBuilder)
+function mapStateToProps(state, props) {
+	console.log(props.formId)
+	return {
+			form: props.formId || 'formBuilder'
+	};
+}
 
-export default FormBuilder
+export default connect(mapStateToProps)(reduxForm({ enableReinitialize: true, validate })(FormBuilder));

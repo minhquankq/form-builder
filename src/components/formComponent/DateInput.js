@@ -9,40 +9,24 @@ import {
 
 class DateInput extends Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
+			focused: false
 		}
-	}
-
-	componentDidMount() {
-		let value = this.props.value
-		if(value) {
-			this.setState({
-				value: value
-			})
-		}
-	}
-
-	_onValueChange(date) {
-		let {onValueChange, id} = this.props
-		let value = date
-		onValueChange(id, value);
-		this.setState({
-			value: value
-		})
 	}
 
 	render() {
+		let {input} =  this.props;
 		return (
 			<FormGroup>
-				<Label for={this.props.id}>{this.props.name}</Label>
+				<Label for={this.props.id}>{this.props.label}</Label>
 				<FormGroup>
 					<SingleDatePicker
 						showClearDate={true}
 						showDefaultInputIcon={true}
 						orientation={'vertical'}
-						date={this.state.value}
-						onDateChange={date => this._onValueChange(date)}
+						date={input.value}
+						onDateChange={date => input.onChange(date)}
 						focused={this.state.focused}
 						onFocusChange={({ focused }) => this.setState({ focused })}
 					/>

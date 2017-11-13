@@ -9,20 +9,7 @@ import {
 } from 'reactstrap'
 
 class AutoComplete extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			value: {}
-		}
-	}
 
-	componentDidMount() {
-		let {value} = this.props
-		this.setState({
-			value: value
-		})
-	}
-	
 	loadOptions(input) {
 		let url = this.props.url
 		return fetch(`${url}?q=${input}`)
@@ -32,22 +19,15 @@ class AutoComplete extends Component {
       return { options: json };
     });
 	}
-	
-	_onSelectedChange(value) {
-		this.props.onValueChange(this.props.id, value)
-		this.setState({
-			value: value
-		})
-	}
 
 	renderStaticSelect() {
 		return (
 			<FormGroup>
-				<Label for={this.props.id}>{this.props.name}</Label>
+				<Label for={this.props.id}>{this.props.label}</Label>
 				<Select 
 					{...this.props} 
-					onChange={this._onSelectedChange.bind(this)}
-					value={this.state.value} 
+					onChange={this.props.input.onChange}
+					value={this.props.input.value} 
 					matchPos="start"
 					/>
 			</FormGroup>
@@ -60,8 +40,9 @@ class AutoComplete extends Component {
 				<Label for={this.props.id}>{this.props.name}</Label>
 				<Select.Async
 					{...this.props} 
-					onChange={this._onSelectedChange.bind(this)}
+					onChange={this.props.input.onChange}
 					loadOptions={this.loadOptions.bind(this)}
+					value={this.props.input.value}
 					/>
 			</FormGroup>
 		)
@@ -77,9 +58,9 @@ class AutoComplete extends Component {
 }
 
 AutoComplete.propTypes = {
-	id: PropTypes.string.isRequired,
-	name: PropTypes.string.isRequired,
-	onValueChange: PropTypes.func.isRequired
+	// id: PropTypes.string.isRequired,
+	label: PropTypes.string.isRequired,
+	// onValueChange: PropTypes.func.isRequired
 }
 
 export default AutoComplete

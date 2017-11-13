@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux'
 import {Input, Button} from 'reactstrap'
 import FormBuilder from '../components/formComponent/FormBuilder';
+import _ from 'lodash'
 
 const fields = [
 		{
@@ -8,7 +10,8 @@ const fields = [
 				id: 'brithday',
 				name: 'Brithday',
 				props: {}
-		}, {
+		}, 
+		{
 				component: 'Input',
 				id: 'email',
 				name: 'Email',
@@ -26,16 +29,18 @@ const fields = [
 								paramters: [10]
 						}
 				]
-		}, {
+		}, 
+		{
 				component: 'Input',
-				id: 'name',
-				name: 'Name',
+				id: 'username',
+				name: 'Username',
 				props: {
 						type: 'text',
 						placeholder: 'Enter username',
 						value: 'vmquan'
 				}
-		}, {
+		}
+		, {
 				component: 'Input',
 				id: 'password',
 				name: 'Password',
@@ -43,17 +48,20 @@ const fields = [
 						type: 'password',
 						placeholder: 'Enter password'
 				}
-		}, {
+		}, 
+		{
 				component: 'RichText',
 				id: 'content',
 				name: 'Content',
 				props: {}
-		}, {
+		}, 
+		{
 				component: 'Attachment',
 				id: 'attachment',
 				name: 'Attachment',
 				props: {}
-		}, {
+		}, 
+		{
 				component: "Input",
 				id: "description",
 				name: "Description",
@@ -64,7 +72,8 @@ const fields = [
 								"height": "200px"
 						}
 				}
-		}, {
+		}, 
+		{
 				component: 'Select',
 				id: 'sex',
 				name: 'Sex',
@@ -92,14 +101,16 @@ const fields = [
 						labelKey: 'name',
 						valueKey: 'id'
 				}
-		}, {
+		}, 
+		{
 				component: 'CheckBox',
 				id: 'isGay',
 				name: 'Is gay?',
 				props: {
 						multiple: false
 				}
-		}, {
+		}, 
+		{
 				component: 'CheckBox',
 				id: 'language',
 				name: 'Language',
@@ -118,7 +129,8 @@ const fields = [
 								}
 						]
 				}
-		}, {
+		}, 
+		{
 				component: 'RadioButton',
 				id: 'country',
 				name: 'Country',
@@ -138,15 +150,13 @@ const fields = [
 				}
 		}
 ]
-
-export default class ExampleFormBuilder extends Component {
+class ExampleFormBuilder extends Component {
 
 		constructor(props) {
 				super(props);
 				this.state = {
 						fields: fields,
-						configStr: '',
-						data: {}
+						configStr: ''
 				}
 		}
 
@@ -163,10 +173,6 @@ export default class ExampleFormBuilder extends Component {
 				} catch (e) {
 						console.log(e)
 				}
-		}
-
-		updateData(data) {
-				this.setState({data: data})
 		}
 
 		render() {
@@ -190,15 +196,10 @@ export default class ExampleFormBuilder extends Component {
 														.bind(this)}>Reload configuration</Button>
 										</div>
 										<div className="col-md-4 scrollbar">
-												<FormBuilder
-														fields={this.state.fields}
-														data={this.state.data}
-														updateData={this
-														.updateData
-														.bind(this)}/>
+												<FormBuilder fields={this.state.fields}/>
 										</div>
 										<div className="col-md-4">
-												<pre>{JSON.stringify(this.state.data, null, 2)}</pre>
+												<pre>{JSON.stringify(this.props.data, null, 2)}</pre>
 										</div>
 
 								</div>
@@ -207,3 +208,21 @@ export default class ExampleFormBuilder extends Component {
 				)
 		}
 }
+
+const mapStateToProps = state => {
+  return {
+    data: _.get(state, 'form.formBuilder.values')
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+  }
+}
+
+ExampleFormBuilder = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ExampleFormBuilder)
+
+export default ExampleFormBuilder

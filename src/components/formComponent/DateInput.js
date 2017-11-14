@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { SingleDatePicker } from 'react-dates';
+// import { SingleDatePicker } from 'react-dates';
+import Datetime from 'react-datetime'
+import moment from 'moment'
+// import _ from 'lodash'
 import {
 	FormGroup,
 	Label,
 } from 'reactstrap'
+
+import '../../react-datetime.css';
 
 
 class DateInput extends Component {
@@ -15,21 +20,39 @@ class DateInput extends Component {
 		}
 	}
 
+	onChange(value) {
+		let {renderTime, input} = this.props
+		if(renderTime) {
+			input.onChange(value.format());
+		} else {
+			input.onChange(value.format('YYYY-MM-DD'));
+		}
+	}
+
 	render() {
-		let {input} =  this.props;
+		let {input, renderTime} =  this.props;
+		let value = moment(input.value)
+
 		return (
 			<FormGroup>
-				<Label for={this.props.id}>{this.props.label}</Label>
+				<Label>{this.props.label}</Label>
 				<FormGroup>
-					<SingleDatePicker
+					{/* <SingleDatePicker
 						showClearDate={true}
 						showDefaultInputIcon={true}
-						orientation={'vertical'}
-						date={input.value}
+						date={value}
 						onDateChange={date => input.onChange(date)}
 						focused={this.state.focused}
 						onFocusChange={({ focused }) => this.setState({ focused })}
-					/>
+					/> */}
+					<Datetime 
+						onChange={this.onChange.bind(this)}
+						value={value} 
+						closeOnSelect={true} 
+						timeConstraints={{ minutes: { step: 5 }}}
+						dateFormat="YYYY-MM-DD"
+						timeFormat={this.props.renderTime}
+						/>
 				</FormGroup>
 			</FormGroup>
 		)
@@ -37,9 +60,9 @@ class DateInput extends Component {
 }
 
 DateInput.propTypes = {
-	id: PropTypes.string.isRequired,
-	name: PropTypes.string.isRequired,
-	onValueChange: PropTypes.func.isRequired
+	// id: PropTypes.string.isRequired,
+	label: PropTypes.string.isRequired,
+	// onValueChange: PropTypes.func.isRequired
 }
 
 export default DateInput

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import { Form, Alert } from 'reactstrap'
+import _ from 'lodash'
 
 import AutoComplete from './AutoComplete'
 import TextInput from './TextInput'
@@ -9,7 +11,7 @@ import CheckBox from './CheckBox'
 import RadioButton from './RadioButton'
 import DateInput from './DateInput'
 
-// import * as Validator from '../../services/validator'
+import * as Validator from '../../services/validator'
 
 const COMPONENTS = {
 	Input: TextInput,
@@ -23,8 +25,6 @@ class FormBuilder extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// data: {},
-			validate: {}
 		}
 	}
 
@@ -41,55 +41,11 @@ class FormBuilder extends Component {
 		}
 	}
 
-	// onValueChange(id, value) {
-	// 	let {data} = this.props;
-	// 	data[id] = value;
-	// 	// this.setState({data: data})
-	// 	this.props.updateData(data);
-	// }
-
-	// validateInput(id, value) {
-	// 	let validate = this.state.validate[id]
-	// 	let result = [];
-	// 	let error = this.state.error || {}
-	// 	if(validate) {
-	// 		validate.forEach(v => {
-	// 			let func = Validator[v.func]
-	// 			if(func) {
-	// 				let validateResult = null
-	// 				if(v.paramters) {
-	// 					validateResult = func(value, ...v.paramters)
-	// 				} else {
-	// 					validateResult = func(value)
-	// 				}
-					
-	// 				if(validateResult) result.push(validateResult)
-	// 			}
-	// 		})
-	// 	}
-	// 	error[id] = result
-	// 	this.setState({
-	// 		error: error
-	// 	})
-	// 	return result;
-	// }
-
 	renderField(field) {
 		let {component, id, name, props} = field
-		// let {data} = this.props
 		let Component = COMPONENTS[component]
 		if(Component) {
 			return <Field name={id} label={name} component={Component} {...props} key={id} />
-			// return <Component
-			// 					{...props}
-			// 					key={id}
-			// 					id={id}
-			// 					name={name}
-			// 					data={data}
-			// 					value={data[id]}
-			// 					validateInput={this.validateInput.bind(this)}
-			// 					onValueChange={this.onValueChange.bind(this)} 
-			// 					/>
 		} else {
 			return (
 				<Alert color="warning" key={id}>
@@ -115,8 +71,32 @@ FormBuilder.propTypes = {
 	fields: PropTypes.array.isRequired
 }
 
-FormBuilder = reduxForm({
-  form: 'formBuilder'
-})(FormBuilder)
+const validate = (values, props) => {
+	const errors = {}
+	props.fields.forEach(f => {
+		let error = errors[f.id] || [];
+		errors[f.id] = error
+		if(f.validate) {
+			f.validate.forEach(v => {
+				let parameters = v.parameters || [];
+				let validateResult = Validator[v.func](values[f.id], ...parameters)
+				if(validateResult !== null)
+					error.push(validateResult);
+			})
+		}
+		if(_.isEmpty(error)) {
+			delete errors[f.id]
+		}
+	})
 
-export default FormBuilder
+	return errors;
+}
+
+function mapStateToProps(state, props) {
+	console.log(props.formId)
+	return {
+			form: props.formId || 'formBuilder'
+	};
+}
+
+export default connect(mapStateToProps)(reduxForm({ enableReinitialize: true, validate })(FormBuilder));

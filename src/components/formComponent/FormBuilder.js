@@ -92,10 +92,6 @@ const validate = (values, props) => {
 	return errors;
 }
 
-// FormBuilder = reduxForm({
-// 	form: 'formBuilder',
-// 	validate
-// })(FormBuilder)
 function mapStateToProps(state, props) {
 	console.log(props.formId)
 	return {

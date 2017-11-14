@@ -45,14 +45,33 @@ const fields = [
     "props": {
       "type": "password",
       "placeholder": "Enter password"
-    }
+		},
+		"validate": [
+      {
+        "func": "require"
+      },
+      {
+        "func": "minLength",
+        "parameters": [
+          10
+        ]
+      }
+    ]
 	},
 	{
     "component": "DateInput",
     "id": "brithday",
     "name": "Brithday",
     "props": {
-      "orientation": "vertical"
+      "renderTime": false
+    }
+  },
+  {
+    "component": "DateInput",
+    "id": "party_time",
+    "name": "Party time",
+    "props": {
+      "renderTime": true
     }
   },
   {
@@ -179,7 +198,7 @@ class ExampleFormBuilder extends Component {
 				})
 		}
 
-		_reloadConfig() {
+		reloadConfig() {
 				try {
 						let configFields = JSON.parse(this.state.configStr);
 						this.setState({fields: configFields})
@@ -205,7 +224,7 @@ class ExampleFormBuilder extends Component {
 														size="lg"
 														block
 														onClick={this
-														._reloadConfig
+														.reloadConfig
 														.bind(this)}>Reload configuration</Button>
 										</div>
 										<div className="col-md-4 scrollbar">

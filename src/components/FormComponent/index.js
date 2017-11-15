@@ -21,7 +21,7 @@ const COMPONENTS = {
 	DateInput: DateInput
 }
 
-class FormBuilder extends Component {
+class FromComponent extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -67,7 +67,7 @@ class FormBuilder extends Component {
 	}
 }
 
-FormBuilder.propTypes = {
+FromComponent.propTypes = {
 	fields: PropTypes.array.isRequired
 }
 
@@ -93,10 +93,9 @@ const validate = (values, props) => {
 }
 
 function mapStateToProps(state, props) {
-	console.log(props.formId)
 	return {
 			form: props.formId || 'formBuilder'
 	};
 }
 
-export default connect(mapStateToProps)(reduxForm({ enableReinitialize: true, validate })(FormBuilder));
+export default connect(mapStateToProps)(reduxForm({ enableReinitialize: true, validate })(FromComponent));

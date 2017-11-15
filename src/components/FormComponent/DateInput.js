@@ -30,7 +30,7 @@ class DateInput extends Component {
 	}
 
 	render() {
-		let {input, renderTime} =  this.props;
+		let {input} =  this.props;
 		let value = moment(input.value)
 
 		return (

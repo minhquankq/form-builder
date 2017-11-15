@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import {Input, Button} from 'reactstrap'
-import FormBuilder from '../components/formComponent/FormBuilder';
+import FromComponent from '../components/FormComponent';
 import _ from 'lodash'
 
 const fields = [
@@ -215,20 +215,16 @@ class ExampleFormBuilder extends Component {
 												<Input
 														type="textarea"
 														value={this.state.configStr}
-														style={{
-														height: "425px"
-												}}
+														style={{ height: "425px" }}
 														onChange={e => this.setState({configStr: e.target.value})}/>
 												<Button
 														color="primary"
 														size="lg"
 														block
-														onClick={this
-														.reloadConfig
-														.bind(this)}>Reload configuration</Button>
+														onClick={this.reloadConfig.bind(this)}>Reload configuration</Button>
 										</div>
 										<div className="col-md-4 scrollbar">
-												<FormBuilder fields={this.state.fields} formId={'ExampleForm'}/>
+												<FromComponent fields={this.state.fields} formId={'ExampleForm'}/>
 										</div>
 										<div className="col-md-4">
 												<pre>{JSON.stringify(this.props.data, null, 2)}</pre>
@@ -243,7 +239,7 @@ class ExampleFormBuilder extends Component {
 
 const mapStateToProps = state => {
   return {
-    data: _.get(state, 'form.ExampleForm.values')
+    data: _.get(state, 'FormComponent.ExampleForm.values')
   }
 }
 

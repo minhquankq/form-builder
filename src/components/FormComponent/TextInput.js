@@ -16,7 +16,7 @@ class TextInput extends Component {
 		// 	return <FormFeedback key={index}>{err.message}</FormFeedback>
 		// })
 		let errorComponent = null;
-		let { dirty, error, warning, invalid } = this.props.meta
+		let { dirty, error, invalid } = this.props.meta //warning
 		let valid = dirty === false ? null : !invalid
 		
 		if(!_.isEmpty(error)) {

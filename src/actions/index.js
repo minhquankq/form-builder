@@ -1,4 +1,5 @@
+import * as TableComponentAction from './tableComponentAction'
 
-export {
-	
-}
+export const ActionCreators = Object.assign({},
+	TableComponentAction,
+);

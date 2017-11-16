@@ -239,7 +239,7 @@ class ExampleFormBuilder extends Component {
 
 const mapStateToProps = state => {
   return {
-    data: _.get(state, 'FormComponent.ExampleForm.values')
+    data: _.get(state, 'form.ExampleForm.values')
   }
 }
 

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'reactstrap'
 import _ from 'lodash'
-import { Input } from 'reactstrap'
 
 export default class DataTable extends Component {
 	constructor(props) {
@@ -15,7 +14,7 @@ export default class DataTable extends Component {
 	handleFilterChange(key, value) {
 		let filter = this.state.filter || {};
 		filter[key] = value;
-
+		// call api to filter data
 		this.setState({
 			filter: filter
 		})
@@ -23,14 +22,12 @@ export default class DataTable extends Component {
 
 	renderTableHeader() {
 		let {fields} = this.props
-		let {filter} = this.state
 		let fieldsComponent = fields.map(f => <th className={f.sortable === true ? 'sortable' : ''} key={f.name}>{f.label}</th>)
 		let filterComponent = fields.map(f => {
 			if(f.searchable) {
 				return (
 					<th key={f.name}>
-						<input 
-							// value={filter[f.name]} 
+						<input
 							onChange={value => this.handleFilterChange(f.name, value.target.value)} />
 					</th>
 				)
@@ -87,7 +84,7 @@ export default class DataTable extends Component {
 			)
 		})
 		return (
-			<tbody>
+			<tbody className="">
 				{tableRowComponent}
 			</tbody>
 		)

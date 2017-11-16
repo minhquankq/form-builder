@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
-import { Form, Alert } from 'reactstrap'
+import { Form, Alert, Button } from 'reactstrap'
 import _ from 'lodash'
 
 import AutoComplete from './AutoComplete'
@@ -60,7 +60,7 @@ class FromComponent extends Component {
 		if(!fields) return null;
 		let fieldsComponent = fields.map(f => this.renderField(f));
 		return(
-			<Form onSubmit={() => console.log('Submmitted')}>
+			<Form onSubmit={(e) => console.log('e')}>
 				{fieldsComponent}
 			</Form>
 		)

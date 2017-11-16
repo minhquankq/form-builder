@@ -5,7 +5,6 @@ import { Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 const SHOW_PAGE = 3;
 export default class TablePagination extends Component {
 	changePage(page) {
-		// this.props.actions.changePage(page);
 		this.props.handleChangePage(page)
 	}
 
@@ -35,19 +34,21 @@ export default class TablePagination extends Component {
 		return (
 			<div className="row">
 				<div className="col-md-6">
-				<Pagination>
-					<PaginationItem disabled={page===1} onClick={this.changePage.bind(this, page-1)}>
-						<PaginationLink previous href={'#/'+ (page -1)} />
-					</PaginationItem>
-					{this.renderMore(start !== 1)}
-					{pageComponents}
-					{this.renderMore(end !== total)}
-					<PaginationItem disabled={page===total} onClick={this.changePage.bind(this, page + 1)}>
-						<PaginationLink next href={'#/'+ (page +1)} />
-					</PaginationItem>
-				</Pagination>
+					<Pagination>
+						<PaginationItem disabled={page===1} onClick={this.changePage.bind(this, page-1)}>
+							<PaginationLink previous href={'#/'+ (page -1)} />
+						</PaginationItem>
+						{this.renderMore(start !== 1)}
+						{pageComponents}
+						{this.renderMore(end !== total)}
+						<PaginationItem disabled={page===total} onClick={this.changePage.bind(this, page + 1)}>
+							<PaginationLink next href={'#/'+ (page +1)} />
+						</PaginationItem>
+					</Pagination>
 				</div>
-				<i className="col-md-6">{page} / {total}</i>
+				<div className="col-md-6">
+					<i>{page} / {total}</i>
+				</div>
 			</div>
 		)
 	}

@@ -10,31 +10,30 @@ import {
 class CheckBox extends Component {
 
 	multiValueChange(e, key) {
-		console.log(e.checked)
 		let value = this.props.input.value || {};
 		value[key] = e.target.checked;
 		this.props.input.onChange(value);
 	}
 
-	renderSingleCheckBox(props) {
+	renderSingleCheckBox() {
 		return (
 			<FormGroup className="form-checkbox">
 				<Label>
 					<Input 
 						type="checkbox"
-						onChange={props.input.onChange}
-						value={props.input.value} 
+						onChange={this.props.input.onChange}
+						value={this.props.input.value} 
 					/>
 					{' '}
-					{props.label}
+					{this.props.label}
 				</Label>
 			</FormGroup>
 		)
 	}
 
-	renderMultipleCheckBox(props) {
-		let value = props.input.value || {};
-		let optionComponents = props.options.map(o => {
+	renderMultipleCheckBox() {
+		let value = this.props.input.value || {};
+		let optionComponents = this.props.options.map(o => {
 			return (
 				<FormGroup className="form-checkbox" key={o.value}>
 					<Label>
@@ -51,7 +50,7 @@ class CheckBox extends Component {
 		})
 		return (
 			<FormGroup tag="fieldset">
-				<Label>{props.label}</Label>
+				<Label>{this.props.label}</Label>
 				{optionComponents}
 			</FormGroup>
 		)
@@ -60,9 +59,9 @@ class CheckBox extends Component {
 	render() {
 		let {multiple} = this.props
 		if(multiple) 
-			return this.renderMultipleCheckBox(this.props);
+			return this.renderMultipleCheckBox();
 		else 
-			return this.renderSingleCheckBox(this.props);
+			return this.renderSingleCheckBox();
 	}
 }
 

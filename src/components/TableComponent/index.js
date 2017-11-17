@@ -15,6 +15,7 @@ class TableComponent extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
+			sort:{}
 		}
 	}
 
@@ -24,8 +25,34 @@ class TableComponent extends Component {
 	}
 
 	handleChangePage(page) {
-		let {actions, url} = this.props
-		actions.loadDataTable(url, page)
+		let {actions, url, pagination} = this.props
+		let {filter, sort} = this.state
+		if(page < 1 || page > pagination.total ||page === pagination.page) return;
+		actions.loadDataTable(url, page, filter, sort)
+	}
+
+	handleFilter(filter) {
+		let {actions, url, pagination} = this.props
+		let {sort} = this.state
+		this.setState({filter})
+		actions.loadDataTable(url, pagination.page, filter, sort)
+	}
+
+	handleSortChange(fieldName) {
+		let {actions, url, pagination} = this.props
+		let {sort, filter} = this.state
+		if(_.isNil(sort[fieldName]) || sort[fieldName] === 0) {
+			// sort = {}
+			sort[fieldName] = 1;
+		} else {
+			if(sort[fieldName] === 1) {
+				sort[fieldName] = -1
+			} else {
+				delete sort[fieldName]
+			}
+		}
+		this.setState({sort})
+		actions.loadDataTable(url, pagination.page, filter, sort)
 	}
 
 	renderHeaderActions() {
@@ -41,7 +68,7 @@ class TableComponent extends Component {
 
 	renderTableAndPagination() {
 		let {data, fields} = this.props.data
-		let {showFields} = this.state
+		let {showFields, sort} = this.state
 		let loadingComponent = null;
 		let tableComponent = null;
 		if(this.props.loading) {
@@ -58,7 +85,11 @@ class TableComponent extends Component {
 				<div>
 					<DataTable 
 						data={data} 
-						fields={fields} />
+						fields={fields}
+						sort={sort}
+						filterData={this.handleFilter.bind(this)} 
+						sortChange={this.handleSortChange.bind(this)}
+						/>
 					<TablePagination 
 						{...this.props.pagination} 
 						handleChangePage={this.handleChangePage.bind(this)} 

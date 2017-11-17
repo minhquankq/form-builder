@@ -9,8 +9,8 @@ class ExampleTableComponent extends Component {
 		render() {
 				return (
 					<div>
-						{/* <TableComponent url="https://vc_itsm_dev.vng.com.vn/v1/ticket" /> */}
-						<TableComponent url="https://vc_cmdb_dev.vng.com.vn/v1/product" />
+						<TableComponent url="https://vc_itsm_dev.vng.com.vn/v1/ticket" />
+						{/* <TableComponent url="https://vc_cmdb_dev.vng.com.vn/v1/product" /> */}
 					</div>
 				)
 		}

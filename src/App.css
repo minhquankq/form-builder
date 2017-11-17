@@ -56,13 +56,23 @@
   min-width: 140px;
 }
 
-.sortable {
+.sortable, .sort-increase, .sort-decrease {
   cursor: pointer;
 }
 
 .sortable::after {
   font: normal normal normal 14px/1 FontAwesome;
   content: ' \00a0\f0dc';
+}
+
+.sort-increase::after {
+  font: normal normal normal 14px/1 FontAwesome;
+  content: ' \00a0\f160';
+}
+
+.sort-decrease::after {
+  font: normal normal normal 14px/1 FontAwesome;
+  content: ' \00a0\f161';
 }
 
 .loading {

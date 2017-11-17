@@ -27,7 +27,6 @@ export default class ConfigField extends Component {
 	}
 	
 	componentDidMount() {
-		console.log('ConfigField did mount')
 		let {data} = this.props
 		if(!_.isEmpty(data)) {
 			this.setState({

@@ -18,11 +18,42 @@ export default class DataTable extends Component {
 		this.setState({
 			filter: filter
 		})
+		this.filterData(filter)
+	}
+
+	handleSort(fieldName) {
+		this.props.sortChange(fieldName);
+	}
+
+	filterData(filter) {
+		if(_.isEmpty(this.timer)) {
+			clearTimeout(this.timer)
+		}
+		this.timer = setTimeout(() => {
+			this.props.filterData(filter);
+		}, 500)
 	}
 
 	renderTableHeader() {
-		let {fields} = this.props
-		let fieldsComponent = fields.map(f => <th className={f.sortable === true ? 'sortable' : ''} key={f.name}>{f.label}</th>)
+		let {fields, sort} = this.props
+		let fieldsComponent = fields.map(f => {
+			if(f.sortable === true) {
+				let sortClassName = 'sortable';
+				if(sort[f.name] === 1) {
+					sortClassName = 'sort-increase'
+				} else if(sort[f.name] === -1) {
+					sortClassName = 'sort-decrease'
+				}
+				return <th 
+									className={sortClassName} 
+									key={f.name}
+									onClick={this.handleSort.bind(this, f.name)}
+								>{f.label}</th>
+			} else {
+				return <th key={f.name}>{f.label}</th>
+			}
+			
+		})
 		let filterComponent = fields.map(f => {
 			if(f.searchable) {
 				return (
@@ -102,4 +133,6 @@ export default class DataTable extends Component {
 DataTable.propTypes = {
 	data: PropTypes.array.isRequired,
 	fields: PropTypes.array.isRequired,
+	filterData: PropTypes.func.isRequired,
+	sortChange: PropTypes.func.isRequired
 }

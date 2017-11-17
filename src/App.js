@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import ExampleFormBuilder from './containers/ExampleFormBuilder';
+// import ExampleFormBuilder from './containers/ExampleFormBuilder';
 import ExampleTableComponent from './containers/ExampleTableComponent';
 
 class App extends Component {

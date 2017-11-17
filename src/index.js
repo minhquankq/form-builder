@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
-import logger from 'redux-logger'
+// import logger from 'redux-logger'
 
 import 'react-dates/initialize';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -16,7 +16,8 @@ import reducer from './reducers'
 const store = createStore(
 	reducer,
 	compose(
-		applyMiddleware(logger, thunk),
+		// thunk,
+		applyMiddleware( thunk),
 		window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 	)
 )

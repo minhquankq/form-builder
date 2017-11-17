@@ -68,8 +68,13 @@ export default class DataTable extends Component {
 		})
 		return (
 			<thead>
-				<tr>{fieldsComponent}</tr>
-				<tr>{filterComponent}</tr>
+				<tr>
+					{fieldsComponent}
+					<th>Actions</th>
+				</tr>
+				<tr>
+					{filterComponent}
+				</tr>
 			</thead>
 		)
 	}
@@ -111,6 +116,10 @@ export default class DataTable extends Component {
 			return (
 				<tr key={index}>
 					{cellComponent}
+					<td>
+						<i className="fa fa-pencil table-row-action edit" />
+						<i className="fa fa-trash table-row-action delete" />
+					</td>
 				</tr>
 			)
 		})
@@ -122,7 +131,7 @@ export default class DataTable extends Component {
 	}
 	render() {
 		return (
-			<Table striped hover responsive className="table table-fixed">
+			<Table striped hover responsive className="table table-fixed table-component">
 				{this.renderTableHeader()}
 				{this.renderTableContent()}
 			</Table>

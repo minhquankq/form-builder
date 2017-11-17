@@ -21,6 +21,7 @@ class DateInput extends Component {
 	}
 
 	onChange(value) {
+		
 		let {renderTime, input} = this.props
 		if(renderTime) {
 			input.onChange(value.format());

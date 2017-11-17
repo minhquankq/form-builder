@@ -10,6 +10,8 @@ import { ActionCreators } from '../../actions';
 import DataTable from './DataTable'
 import TablePagination from './TablePagination';
 import ConfigField from './ConfigField';
+import Create from './Create';
+import { Button } from 'reactstrap';
 
 class TableComponent extends Component {
 	constructor(props) {
@@ -29,6 +31,12 @@ class TableComponent extends Component {
 		let {filter, sort} = this.state
 		if(page < 1 || page > pagination.total ||page === pagination.page) return;
 		actions.loadDataTable(url, page, filter, sort)
+	}
+
+	reload() {
+		let {actions, url, pagination} = this.props
+		let {filter, sort} = this.state
+		actions.loadDataTable(url, pagination.page, filter, sort)
 	}
 
 	handleFilter(filter) {
@@ -57,11 +65,17 @@ class TableComponent extends Component {
 
 	renderHeaderActions() {
 		return (
-			<div className="header-actions">
+			<div className="header-actions row">
 				<ConfigField 
 					fields={this.props.data.fields || []}
 					submit={showFields => this.setState({showFields: showFields})}
 					data={this.state.showFields} />
+				<Create />
+				<div>
+					<Button outline color="info" onClick={this.reload.bind(this)} >
+						<i className="fa fa-refresh"/> Reload
+					</Button>
+				</div>
 			</div>
 		)
 	}

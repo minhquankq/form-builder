@@ -80,8 +80,8 @@
   left: 0;
 }
 
-.header-actions {
-  margin: 10px;
+.header-actions, .header-actions > div{
+  margin: 5px;
 }
 
 .modal-body {
@@ -91,4 +91,23 @@
 }
 .modal-form {
   margin: 20px;
+}
+
+.table-row-action {
+  margin: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.table-row-action.delete {
+  color: red;
+  opacity: 0.5;
+}
+
+.btn:hover{
+  cursor: pointer;
+}
+
+.table-component{
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

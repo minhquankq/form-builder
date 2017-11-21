@@ -1,2 +1,8 @@
 export const LOADING_DATA_TABLE = 'LOADING_DATA_TABLE'
 export const DATA_TABLE_LOADED = 'DATA_TABLE_LOADED'
+
+export const SHOW_DIALOG = 'SHOW_DIALOG'
+export const CLOSE_DIALOG = 'CLOSE_DIALOG'
+
+export const FORM_LOADING = 'FORM_LOADING'
+export const FORM_LOAD_DONE = 'FORM_LOAD_DONE'

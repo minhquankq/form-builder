@@ -20,9 +20,7 @@ class TextInput extends Component {
 		let valid = dirty === false ? null : !invalid
 		
 		if(!_.isEmpty(error)) {
-			errorComponent = error.map((err, index) => {
-				return <FormFeedback key={index}>{err.message}</FormFeedback>
-			})
+			errorComponent= <FormFeedback>{error}</FormFeedback>
 		}
 		return (
 			<FormGroup>

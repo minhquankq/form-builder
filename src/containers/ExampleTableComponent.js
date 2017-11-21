@@ -9,7 +9,7 @@ class ExampleTableComponent extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			url: 'https://vc_cmdb_dev.vng.com.vn/v1/product'
+			url: 'http://demo2002634.mockable.io/users'
 		}
 	}
 		render() {

@@ -1,7 +1,12 @@
 import _ from 'lodash'
 import CryptoJS from 'crypto-js'
 import HttpService from '../services/httpService'
-import { LOADING_DATA_TABLE, DATA_TABLE_LOADED } from './actionTypes'
+import { 
+	LOADING_DATA_TABLE, 
+	DATA_TABLE_LOADED, 
+	SHOW_DIALOG, 
+	CLOSE_DIALOG
+} from './actionTypes'
 
 function getPaginationObject(total, numPerpage, page) {
 	return {
@@ -28,12 +33,14 @@ function getFilterAndSort(filter, sort) {
 	var words = CryptoJS.enc.Utf8.parse(JSON.stringify(result))
 	return CryptoJS.enc.Base64.stringify(words);
 }
+
 export function loadDataTable(url, page, filter, sort) {
 	return (dispatch) => {
 		dispatch({type: LOADING_DATA_TABLE})
 		// prepare request info
 		let numPerpage = 10;
 		let requestUrl = url + '/' + numPerpage + '/' + ((page - 1) * numPerpage) + '?data=' + getFilterAndSort(filter, sort);
+		requestUrl = url;
 		return HttpService.sentRequest(requestUrl)
 			.then(res => res.json(), err => console.log('An error occurded.', err))
 			.then(json => {
@@ -45,5 +52,23 @@ export function loadDataTable(url, page, filter, sort) {
 					pagination: getPaginationObject(json.total, numPerpage, page)
 				})
 			})
+	}
+}
+
+export function showDialog(name) {
+	return dispatch => {
+		dispatch({
+			type: SHOW_DIALOG,
+			name: name
+		})
+	}
+}
+
+export function closeDialog(name) {
+	return dispatch => {
+		dispatch({
+			type: CLOSE_DIALOG,
+			name: name
+		})
 	}
 }

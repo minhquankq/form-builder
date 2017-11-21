@@ -11,6 +11,7 @@ import DataTable from './DataTable'
 import TablePagination from './TablePagination';
 import ConfigField from './ConfigField';
 import Create from './Create';
+import Edit from './Edit';
 import { Button } from 'reactstrap';
 
 class TableComponent extends Component {
@@ -63,6 +64,17 @@ class TableComponent extends Component {
 		actions.loadDataTable(url, pagination.page, filter, sort)
 	}
 
+	handleAction(actionName, value) {
+		let {actions, url} = this.props
+		switch(actionName) {
+			case 'edit':
+				actions.loadEdit(url, value); // maybe url + id
+				break;
+			default:
+				return;
+		}
+	}
+
 	renderHeaderActions() {
 		return (
 			<div className="header-actions row">
@@ -70,7 +82,7 @@ class TableComponent extends Component {
 					fields={this.props.data.fields || []}
 					submit={showFields => this.setState({showFields: showFields})}
 					data={this.state.showFields} />
-				<Create />
+				<Create url={this.props.url} />
 				<div>
 					<Button outline color="info" onClick={this.reload.bind(this)} >
 						<i className="fa fa-refresh"/> Reload
@@ -103,6 +115,7 @@ class TableComponent extends Component {
 						sort={sort}
 						filterData={this.handleFilter.bind(this)} 
 						sortChange={this.handleSortChange.bind(this)}
+						handleAction={this.handleAction.bind(this)}
 						/>
 					<TablePagination 
 						{...this.props.pagination} 
@@ -124,6 +137,7 @@ class TableComponent extends Component {
 			<div>
 				{this.renderHeaderActions()}
 				{this.renderTableAndPagination()}
+				<Edit />
 			</div>
 		)
 	}

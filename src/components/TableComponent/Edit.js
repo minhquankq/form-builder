@@ -8,13 +8,13 @@ import {connect} from 'react-redux'
 import {ActionCreators} from '../../actions'
 import FromComponent from '../FormComponent'
 
-const dialogName = 'create'
-class Create extends Component {
+const dialogName = 'edit'
+class Edit extends Component {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.openCreateForm = this.openCreateForm.bind(this);
+    this.openEditForm = this.openEditForm.bind(this);
   }
 
   toggle() {
@@ -26,24 +26,24 @@ class Create extends Component {
     }
   }
 
-  openCreateForm() {
+  openEditForm() {
     let {fields, actions} = this.props
     if(_.isEmpty(fields)) {
       // TODO load fields by key whatever... maybe depend on url
-      actions.loadFields("http://demo2002634.mockable.io/users/fields"); 
+      actions.loadFields("http://demo2002634.mockable.io/users/fields");
     }
     this.toggle();
   }
 
   handleSubmit() {
     let {url, data, actions} = this.props
-    actions.create(url, data);
+    actions.edit(url, data);
   }
 
   renderContent() {
     return (
       <div>
-        <FromComponent fields={this.props.fields} formId={'Create'} mode={'CREATE'} />
+        <FromComponent fields={this.props.fields} formId={'Edit'} mode={'EDIT'} />
       </div>
     )
   }
@@ -63,9 +63,6 @@ class Create extends Component {
     let isError = !_.isEmpty(error);
     return (
       <div>
-        <Button outline color="info" onClick={this.openCreateForm}>
-          <i className="fa fa-plus" aria-hidden="true"></i>{' '}Create
-        </Button>
         <Modal
           isOpen={this.props.show}
           toggle={this.toggle}
@@ -73,7 +70,7 @@ class Create extends Component {
           size="lg">
           <ModalHeader toggle={this.toggle}>
             <i className="fa fa-plus" aria-hidden="true"/>{' '}
-            Create new
+						Edit
           </ModalHeader>
           <ModalBody>
             {/* Content will be here */}
@@ -90,18 +87,18 @@ class Create extends Component {
   }
 }
 
-Create.propTypes = {
+Edit.propTypes = {
   url: PropTypes.string
 }
 
 export default connect(state => {
     return {
-      data: _.get(state, 'form.Create.values'),
-      error: _.get(state, 'form.Create.syncErrors'),
-      show: _.get(state, 'TableComponent.showDialog.'+dialogName, false),
+      data: _.get(state, 'form.Edit.values'),
+      error: _.get(state, 'form.Edit.syncErrors'),
+      show: _.get(state, 'TableComponent.showDialog.' + dialogName, false),
       fields: _.get(state, 'FormComponent.fields', []),
-      formLoading: _.get(state, 'FormComponent.formLoading', false)
+      formLoading: _.get(state, 'FormComponent.formLoading', false),
     }
   },
   dispatch => ({ actions: bindActionCreators(ActionCreators, dispatch), dispatch })
-)(Create)
+)(Edit)

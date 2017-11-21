@@ -29,23 +29,24 @@ class FromComponent extends Component {
 	}
 
 	componentDidMount() {
-		let {fields} = this.props
-		let validate = {}
-		if(fields) {
-			fields.forEach(f => {
-				validate[f.id] = f.validate
-			})
-			this.setState({
-				validate: validate
-			})
-		}
+
 	}
 
 	renderField(field) {
 		let {component, id, name, props} = field
+		let validates = field.validate.map(v => {
+			return Validator[v]
+		})
 		let Component = COMPONENTS[component]
 		if(Component) {
-			return <Field name={id} label={name} component={Component} {...props} key={id} />
+			return <Field 
+								name={id} 
+								label={name} 
+								component={Component} 
+								{...props} 
+								key={id}
+								validate={validates}
+								 />
 		} else {
 			return (
 				<Alert color="warning" key={id}>
@@ -71,31 +72,35 @@ FromComponent.propTypes = {
 	fields: PropTypes.array.isRequired
 }
 
-const validate = (values, props) => {
-	const errors = {}
-	props.fields.forEach(f => {
-		let error = errors[f.id] || [];
-		errors[f.id] = error
-		if(f.validate) {
-			f.validate.forEach(v => {
-				let parameters = v.parameters || [];
-				let validateResult = Validator[v.func](values[f.id], ...parameters)
-				if(validateResult !== null)
-					error.push(validateResult);
-			})
-		}
-		if(_.isEmpty(error)) {
-			delete errors[f.id]
-		}
-	})
+// const validate = (values, props) => {
+// 	const errors = {}
+// 	props.fields.forEach(f => {
+// 		let error = errors[f.id] || [];
+// 		errors[f.id] = error
+// 		if(f.validate) {
+// 			f.validate.forEach(v => {
+// 				let parameters = v.parameters || [];
+// 				let validateResult = Validator[v.func](values[f.id], ...parameters)
+// 				if(validateResult !== null)
+// 					error.push(validateResult);
+// 			})
+// 		}
+// 		if(_.isEmpty(error)) {
+// 			delete errors[f.id]
+// 		}
+// 	})
 
-	return errors;
-}
+// 	return errors;
+// }
 
 function mapStateToProps(state, props) {
+	let formId = props.formId || 'formBuilder'
 	return {
-			form: props.formId || 'formBuilder'
+			form: formId
 	};
 }
 
-export default connect(mapStateToProps)(reduxForm({ enableReinitialize: true, validate })(FromComponent));
+export default connect(mapStateToProps)(reduxForm(
+																								{ 
+																									enableReinitialize: true, 
+																								})(FromComponent));

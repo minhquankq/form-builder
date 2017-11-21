@@ -117,8 +117,8 @@ export default class DataTable extends Component {
 				<tr key={index}>
 					{cellComponent}
 					<td>
-						<i className="fa fa-pencil table-row-action edit" />
-						<i className="fa fa-trash table-row-action delete" />
+						<i onClick={()=>this.props.handleAction('edit', d)} className="btn fa fa-pencil table-row-action edit" />
+						<i onClick={()=>this.props.handleAction('delete', d)} className="btn fa fa-trash table-row-action delete" />
 					</td>
 				</tr>
 			)

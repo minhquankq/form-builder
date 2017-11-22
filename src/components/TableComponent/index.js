@@ -6,7 +6,7 @@ import _ from 'lodash'
 import Loading from 'react-loading-bar'
 import 'react-loading-bar/dist/index.css'
 
-import logo from '../../logo.svg';
+// import logo from '../../logo.svg';
 import { ActionCreators } from '../../actions';
 
 import DataTable from './DataTable'

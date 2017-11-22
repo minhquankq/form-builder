@@ -59,8 +59,6 @@ class Create extends Component {
   }
 
   render() {
-    let {error} = this.props
-    let isError = !_.isEmpty(error);
     return (
       <div>
         <Button outline color="info" onClick={this.openCreateForm}>
@@ -81,7 +79,7 @@ class Create extends Component {
             {this.renderContent()}
           </ModalBody>
           <ModalFooter>
-            <Button color="success" disabled={isError} onClick={this.handleSubmit}>OK</Button>
+            <Button color="success" disabled={this.props.isError} onClick={this.handleSubmit}>OK</Button>
             <Button color="secondary" onClick={this.toggle}>Cancel</Button>
           </ModalFooter>
         </Modal>
@@ -95,10 +93,11 @@ Create.propTypes = {
 }
 
 export default connect(state => {
+  let isError = !_.isEmpty(_.get(state, 'form.Create.syncErrors')) || !_.isEmpty(_.get(state, 'form.Create.asyncErrors'))
     return {
       data: _.get(state, 'form.Create.values'),
-      error: _.get(state, 'form.Create.syncErrors'),
-      show: _.get(state, 'TableComponent.showDialog.'+dialogName, false),
+      isError: isError,
+      show: _.get(state, 'TableComponent.showDialog.' + dialogName, false),
       fields: _.get(state, 'FormComponent.fields', []),
       formLoading: _.get(state, 'FormComponent.formLoading', false)
     }

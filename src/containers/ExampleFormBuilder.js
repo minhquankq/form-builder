@@ -12,21 +12,7 @@ const fields = [
     "props": {
       "type": "email",
       "placeholder": "Enter an email"
-    },
-    "validate": [
-      {
-        "func": "require"
-      },
-      {
-        "func": "email"
-      },
-      {
-        "func": "minLength",
-        "parameters": [
-          10
-        ]
-      }
-    ]
+    }
   },
   {
     "component": "Input",
@@ -45,18 +31,7 @@ const fields = [
     "props": {
       "type": "password",
       "placeholder": "Enter password"
-		},
-		"validate": [
-      {
-        "func": "require"
-      },
-      {
-        "func": "minLength",
-        "parameters": [
-          10
-        ]
-      }
-    ]
+		}
 	},
 	{
     "component": "DateInput",

@@ -58,7 +58,6 @@ export function loadEdit(url, data) {
 			}
 		)
 		.then(json => {
-			console.log(JSON.stringify(json))
 			return dispatch({
 				type: FORM_LOAD_DONE,
 				fields: json[0],

@@ -12,6 +12,7 @@ import RadioButton from './RadioButton'
 import DateInput from './DateInput'
 
 import * as Validator from '../../services/validator'
+import * as AsyncValidator from '../../services/asyncValidate'
 
 const COMPONENTS = {
 	Input: TextInput,
@@ -22,16 +23,6 @@ const COMPONENTS = {
 }
 
 class FromComponent extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-		}
-	}
-
-	componentDidMount() {
-
-	}
-
 	renderField(field) {
 		let {component, id, name, props} = field
 		let validates = _.isEmpty(field.validate) ? null : field.validate.map(v => {
@@ -39,11 +30,11 @@ class FromComponent extends Component {
 		})
 		let Component = COMPONENTS[component]
 		if(Component) {
-			return <Field 
-								name={id} 
-								label={name} 
-								component={Component} 
-								{...props} 
+			return <Field
+								name={id}
+								label={name}
+								component={Component}
+								{...props}
 								key={id}
 								validate={validates}
 								 />
@@ -72,46 +63,27 @@ FromComponent.propTypes = {
 	fields: PropTypes.array.isRequired
 }
 
-// const validate = (values, props) => {
-// 	const errors = {}
-// 	props.fields.forEach(f => {
-// 		let error = errors[f.id] || [];
-// 		errors[f.id] = error
-// 		if(f.validate) {
-// 			f.validate.forEach(v => {
-// 				let parameters = v.parameters || [];
-// 				let validateResult = Validator[v.func](values[f.id], ...parameters)
-// 				if(validateResult !== null)
-// 					error.push(validateResult);
-// 			})
-// 		}
-// 		if(_.isEmpty(error)) {
-// 			delete errors[f.id]
-// 		}
-// 	})
-
-// 	return errors;
-// }
-
-const validate = (values, props) => {
-	console.log('validate')
-}
-const asyncValidate = (values, dispatch, props, field) => {
-	console.log('asyncValidate')
-	console.log(field);
+let asyncValidate = (values, dispatch, props, field) => {
+	let fieldConfig = props.fields.filter(f => f.id === field);
+	let funcName = !_.isEmpty(fieldConfig) && fieldConfig[0]['asyncValidate']
+	if(!_.isEmpty(funcName)) {
+		return AsyncValidator[funcName](values[field], field)
+	} else {
+		return AsyncValidator.emptyPromise();
+	}
 }
 
-function mapStateToProps(state, props) {
-	let formId = props.formId || 'formBuilder'
+let mapStateToProps = (state, props) => {
+	let {formId, data} = props
 	return {
 			form: formId,
-			initialValues: props.data
+			initialValues: data
 	};
 }
 
-export default connect(mapStateToProps)(reduxForm(
-																								{ 
-																									enableReinitialize: true, 
-																									validate,
-																									asyncValidate
-																								})(FromComponent));
+let form = reduxForm({
+	enableReinitialize: true,
+	asyncValidate: asyncValidate,
+})(FromComponent)
+
+export default connect(mapStateToProps)(form)

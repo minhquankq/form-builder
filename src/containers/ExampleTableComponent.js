@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {Input} from 'reactstrap'
+// import {Input} from 'reactstrap'
 import {ActionCreators} from '../actions'
 import TableComponent from '../components/TableComponent'
 

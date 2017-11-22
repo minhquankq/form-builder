@@ -16,7 +16,7 @@ class TextInput extends Component {
 		// 	return <FormFeedback key={index}>{err.message}</FormFeedback>
 		// })
 		let errorComponent = null;
-		let { dirty, error, invalid } = this.props.meta //warning
+		let { dirty, error, invalid, asyncValidating } = this.props.meta //warning
 		let valid = dirty === false ? null : !invalid
 		
 		if(!_.isEmpty(error)) {
@@ -27,11 +27,13 @@ class TextInput extends Component {
 				<Label for={this.props.id}>{this.props.label}</Label>
 				<Input
 					{...this.props}
+					{...this.props.input}
 					valid={valid}
-					onChange={this.props.input.onChange}
-					value={this.props.input.value}
 					/>
 					{errorComponent}
+					{
+						asyncValidating && <p>Validating...</p>
+					}
 			</FormGroup>
 		)
 	}

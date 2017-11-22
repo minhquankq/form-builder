@@ -3,6 +3,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
+import Loading from 'react-loading-bar'
+import 'react-loading-bar/dist/index.css'
 
 import logo from '../../logo.svg';
 import { ActionCreators } from '../../actions';
@@ -70,6 +72,9 @@ class TableComponent extends Component {
 			case 'edit':
 				actions.loadEdit(url, value); // maybe url + id
 				break;
+			case 'delete':
+				actions.remove(url, value);
+				break;
 			default:
 				return;
 		}
@@ -95,14 +100,14 @@ class TableComponent extends Component {
 	renderTableAndPagination() {
 		let {data, fields} = this.props.data
 		let {showFields, sort} = this.state
-		let loadingComponent = null;
 		let tableComponent = null;
-		if(this.props.loading) {
-			loadingComponent = 
-				<div className="loading">
-					<img src={logo} className="App-logo" alt="logo" />
-				</div>
-		} 
+
+		// if(this.props.loading) {
+		// 	loadingComponent = 
+		// 		<div className="loading">
+		// 			<img src={logo} className="App-logo" alt="logo" />
+		// 		</div>
+		// } 
 		if(!_.isEmpty(data) || !_.isEmpty(fields)) {
 			if(!_.isEmpty(showFields)) {
 				fields = fields.filter(f => showFields[f.name] === true)
@@ -126,7 +131,7 @@ class TableComponent extends Component {
 		}
 		return (
 			<div>
-				{loadingComponent}
+				<Loading show={this.props.loading} color="red" />
 				{tableComponent}
 			</div>
 		)
@@ -137,7 +142,7 @@ class TableComponent extends Component {
 			<div>
 				{this.renderHeaderActions()}
 				{this.renderTableAndPagination()}
-				<Edit />
+				<Edit url={this.props.url} />
 			</div>
 		)
 	}

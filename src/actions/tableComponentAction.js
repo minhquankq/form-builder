@@ -14,6 +14,7 @@ function getPaginationObject(total, numPerpage, page) {
 		total: Math.ceil(total/numPerpage)
 	}
 }
+
 function getFilterAndSort(filter, sort) {
 	let result = {}
 	if(!_.isEmpty(filter)) {
@@ -44,7 +45,6 @@ export function loadDataTable(url, page, filter, sort) {
 		return HttpService.sentRequest(requestUrl)
 			.then(res => res.json(), err => console.log('An error occurded.', err))
 			.then(json => {
-				//TODO check http status
 				return dispatch({
 					type: DATA_TABLE_LOADED,
 					data: json,
@@ -70,5 +70,11 @@ export function closeDialog(name) {
 			type: CLOSE_DIALOG,
 			name: name
 		})
+	}
+}
+
+export function remove(url, data) {
+	return dispatch => {
+		console.log('delete', url, data)
 	}
 }

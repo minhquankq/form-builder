@@ -74,6 +74,7 @@ export default class DataTable extends Component {
 				</tr>
 				<tr>
 					{filterComponent}
+					<th></th>
 				</tr>
 			</thead>
 		)

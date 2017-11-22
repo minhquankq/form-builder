@@ -14,6 +14,7 @@ export default (state = {}, action) => {
 			return {
 				...state,
 				fields: action.fields,
+				data: action.data,
 				formLoading: false,
 			}
 		default:

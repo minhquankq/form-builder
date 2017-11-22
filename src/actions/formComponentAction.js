@@ -27,7 +27,7 @@ export function loadFields(url) {
 export function create(url, data) {
 	return (dispatch, getState) => {
 		// TODO handle save
-		console.log(url, data)
+		console.log('create', url, data)
 		dispatch({
 			type: CLOSE_DIALOG,
 			name: 'create'
@@ -38,10 +38,8 @@ export function create(url, data) {
 export function loadEdit(url, data) {
 	return (dispatch, getState) => {
 		console.log(url, data)
-		dispatch({
-			type: SHOW_DIALOG,
-			name: 'edit'
-		})
+		dispatch({ type: SHOW_DIALOG, name: 'edit' })
+		dispatch({ type: FORM_LOADING })
 		// Load field
 		let fieldsUrl = url + '/fields'
 		// load data
@@ -51,22 +49,32 @@ export function loadEdit(url, data) {
 			HttpService.sentRequest(dataUrl)
 		])
 		.then(values => {
-				let fieldResponse = values[0]
-				let dataResponse = values[1]
-				return {
-					fieldRes: fieldResponse.json(),
-					dataRes: dataResponse.json()
-				}
+				return Promise.all([
+					values[0].json(),
+					values[1].json()
+				])
 			}, err => {
 				console.log('An error occurded.', err)
 			}
 		)
-		.then(data => {
-			dispatch({
-				type: ''
+		.then(json => {
+			console.log(JSON.stringify(json))
+			return dispatch({
+				type: FORM_LOAD_DONE,
+				fields: json[0],
+				data: json[1]
 			})
-			
 		})
 	}
 }
 
+export function edit(url, data) {
+	return (dispatch, getState) => {
+		// TODO handle save
+		console.log('edit', url, data)
+		dispatch({
+			type: CLOSE_DIALOG,
+			name: 'edit'
+		})
+	}
+}

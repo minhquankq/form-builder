@@ -43,7 +43,7 @@ class Edit extends Component {
   renderContent() {
     return (
       <div>
-        <FromComponent fields={this.props.fields} formId={'Edit'} mode={'EDIT'} />
+        <FromComponent fields={this.props.fields} data={this.props.initData} formId={'Edit'} mode={'EDIT'} />
       </div>
     )
   }
@@ -93,10 +93,11 @@ Edit.propTypes = {
 
 export default connect(state => {
     return {
-      data: _.get(state, 'form.Edit.values'),
       error: _.get(state, 'form.Edit.syncErrors'),
       show: _.get(state, 'TableComponent.showDialog.' + dialogName, false),
+      data: _.get(state, 'form.Edit.values'),
       fields: _.get(state, 'FormComponent.fields', []),
+      initData: _.get(state, 'FormComponent.data'),
       formLoading: _.get(state, 'FormComponent.formLoading', false),
     }
   },

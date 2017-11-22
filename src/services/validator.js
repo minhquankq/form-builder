@@ -4,7 +4,7 @@ const minLength = min => value =>
 		value && value.length < min ? `Must be ${min} characters or more` : undefined
 const minValue = min => value =>
 		value && value < min ? `Must be at least ${min}` : undefined
-	
+
 export const required = value => (value ? undefined : 'Required')
 export const maxLength15 = maxLength(15)
 export const minLength8 = minLength(8)
@@ -23,3 +23,13 @@ export const phoneNumber = value =>
   value && !/^(0|[1-9][0-9]{9})$/i.test(value)
     ? 'Invalid phone number, must be 10 digits'
     : undefined
+
+export const checkExistedEmail = value => {
+  return fetch()
+        .then(res => res.json(), err => {})
+        .then(json => {
+          if(json.message !== 'OK') {
+            throw { email: json.message}
+          }
+        })
+}

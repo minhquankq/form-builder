@@ -34,7 +34,7 @@ class FromComponent extends Component {
 
 	renderField(field) {
 		let {component, id, name, props} = field
-		let validates = field.validate.map(v => {
+		let validates = _.isEmpty(field.validate) ? null : field.validate.map(v => {
 			return Validator[v]
 		})
 		let Component = COMPONENTS[component]
@@ -93,14 +93,25 @@ FromComponent.propTypes = {
 // 	return errors;
 // }
 
+const validate = (values, props) => {
+	console.log('validate')
+}
+const asyncValidate = (values, dispatch, props, field) => {
+	console.log('asyncValidate')
+	console.log(field);
+}
+
 function mapStateToProps(state, props) {
 	let formId = props.formId || 'formBuilder'
 	return {
-			form: formId
+			form: formId,
+			initialValues: props.data
 	};
 }
 
 export default connect(mapStateToProps)(reduxForm(
 																								{ 
 																									enableReinitialize: true, 
+																									validate,
+																									asyncValidate
 																								})(FromComponent));

@@ -14,11 +14,11 @@ class ExampleTableComponent extends Component {
 	}
 		render() {
 				return (
-					<div>
-						<code>https://vc_itsm_dev.vng.com.vn/v1/ticket</code>
+					<div style={{margin: 20}}>
+						{/* <code>https://vc_itsm_dev.vng.com.vn/v1/ticket</code>
 						<code>https://vc_cmdb_dev.vng.com.vn/v1/product</code>
 						<hr />
-						<Input value={this.state.url} onChange={(value) => this.setState({url: value.target.value})} />
+						<Input value={this.state.url} onChange={(value) => this.setState({url: value.target.value})} /> */}
 						{/* <TableComponent url="https://vc_itsm_dev.vng.com.vn/v1/ticket" /> */}
 						<TableComponent url={this.state.url} />
 					</div>

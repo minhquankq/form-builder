@@ -39,7 +39,7 @@ class AutoComplete extends Component {
 			<FormGroup>
 				<Label for={this.props.id}>{this.props.name}</Label>
 				<Select.Async
-					{...this.props} 
+					{...this.props}
 					onChange={this.props.input.onChange}
 					loadOptions={this.loadOptions.bind(this)}
 					value={this.props.input.value}

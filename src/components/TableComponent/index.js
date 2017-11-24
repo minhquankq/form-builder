@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import Loading from 'react-loading-bar'
 import 'react-loading-bar/dist/index.css'
-
+import { Button } from 'reactstrap';
 // import logo from '../../logo.svg';
 import { ActionCreators } from '../../actions';
 
@@ -14,7 +14,7 @@ import TablePagination from './TablePagination';
 import ConfigField from './ConfigField';
 import Create from './Create';
 import Edit from './Edit';
-import { Button } from 'reactstrap';
+import Filter from './Filter'
 
 class TableComponent extends Component {
 	constructor(props) {
@@ -87,6 +87,7 @@ class TableComponent extends Component {
 					fields={this.props.data.fields || []}
 					submit={showFields => this.setState({showFields: showFields})}
 					data={this.state.showFields} />
+				<Filter url={this.props.url} />	
 				<Create url={this.props.url} />
 				<div>
 					<Button outline color="info" onClick={this.reload.bind(this)} >

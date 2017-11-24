@@ -113,3 +113,25 @@
 .table-component{
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
 }
+
+.big-modal {
+  max-width: none;
+  width: 90%;
+}
+
+.filter-row-component {
+  margin: 10px 0px 15px 0px;
+  padding: 5px; 
+  border-bottom-style: solid;
+  border-bottom-width: thin;
+  border-bottom-color: #0006;
+}
+
+.condition-label {
+  display: flex;
+  align-items: center;
+}
+
+.filter-action-panel {
+  text-align: right;
+}

@@ -33,7 +33,7 @@ export default class TablePagination extends Component {
 		}
 		return (
 			<div className="row">
-				<div className="col-md-6">
+				<div className="col-md-6 col-sm-6">
 					<Pagination>
 						<PaginationItem disabled={page===1} onClick={this.changePage.bind(this, page-1)}>
 							<PaginationLink previous href={'#/'+ (page -1)} />
@@ -46,7 +46,7 @@ export default class TablePagination extends Component {
 						</PaginationItem>
 					</Pagination>
 				</div>
-				<div className="col-md-6">
+				<div className="col-md-6 col-sm-6" style={{'marginTop': 10}}>
 					<i>{page} / {total}</i>
 				</div>
 			</div>

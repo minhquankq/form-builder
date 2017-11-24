@@ -46,14 +46,16 @@ class FromComponent extends Component {
 			)
 		}
 	}
-	
+
 	render() {
 		let {fields} = this.props
 		if(!fields) return null;
 		let fieldsComponent = fields.map(f => this.renderField(f));
 		return(
-			<Form onSubmit={(e) => console.log('e')}>
+			<Form onSubmit={(e) => {e.preventDefault(); console.log('onSubmit');} }>
 				{fieldsComponent}
+				{/* this input help to active onSubmit event */}
+				<input type="submit" style={{visibility: 'hidden'}} />
 			</Form>
 		)
 	}

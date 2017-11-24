@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
 
 import {ActionCreators} from '../../actions'
 import FromComponent from '../FormComponent'

@@ -1,5 +1,4 @@
 import SHA256 from 'crypto-js/sha256';
-
 import Config from '../config';
 
 function getHeader(requestInfo) {

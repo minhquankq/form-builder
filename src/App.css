@@ -83,7 +83,7 @@
   margin: 5px;
 }
 
-.modal-body {
+.modal-scrollable {
   max-height: 500px;
   overflow-y: auto;
   overflow-x: auto;

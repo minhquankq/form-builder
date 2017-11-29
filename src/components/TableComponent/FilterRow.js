@@ -10,28 +10,21 @@ import {
 
 import * as FilterInput from '../../services/filterInput'
 
-let CONFIG = {"fields":[{"value":"ticket_id","name":"ID"},{"value":"title","name":"Title"},{"value":"description","name":"Description"},{"value":"status","name":"Status"},{"value":"ticket_category_code","name":"Category"},{"value":"product_info.alias","name":"Product"},{"value":"fid_info.name","name":"Fabric"},{"value":"requester","name":"Requester"},{"value":"priority_id","name":"Priority"},{"value":"source_from","name":"Source from"},{"value":"is_service_catalog_request","name":"Is Service Catelog Request"},{"value":"assigned_to.email","name":"Assignee"},{"value":"expected_at","name":"Expected At"},{"value":"created_at","name":"Created At"},{"value":"closed_at","name":"Closed At"}],"types":{"ticket_id":"String","title":"String","description":"String","status":"Array","ticket_category_code":"Array","product_info.alias":"String","fid_info.name":"String","requester":"String","priority_id":"Array","source_from":"String","is_service_catalog_request":"Boolean","assigned_to.email":"Array","expected_at":"Datetime","created_at":"Datetime","closed_at":"Datetime"},"operators":{"Datetime":["At","NotAt","Before","BeforeOrAt","After","AfterOrAt","InThePast","InTheFuture","Empty","NotEmpty"],"Array":["Includes","Excepts","Anything","Empty","NotEmpty"],"String":["Equals","NotEquals","Empty","NotEmpty","StartsWith","EndsWith","Contains","NotContains","Anything","Same","Different"],"Boolean":["IsTrue","IsFalse","Anything","Empty","NotEmpty"]},"allowInput":{"Datetime":["At","NotAt","Before","BeforeOrAt","After","AfterOrAt"],"Array":["Includes","Excepts"],"String":["Equals","NotEquals","StartsWith","EndsWith","Contains","NotContains","Same","Different"]}}
 const ALL_OPTION = {name: '*', label: 'All'}
 
 export default class FilterRow extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			data: {},
-			config: {}
 		}
 	}
 
 	componentDidMount() {
-		let data = this.props.data || {}
-		this.setState({
-			config: CONFIG,
-			data: data
-		})
+		
 	}
 
 	handleChange(value, fieldName) {
-		let {data, config} = this.state
+		let {data, config} = this.props
 		let {fields, types, operators, allowInput} = config;
 		
 		if(fieldName === 'field') {
@@ -58,7 +51,7 @@ export default class FilterRow extends Component {
 	}
 
 	render() {
-		let {data, config} = this.state
+		let {data, config} = this.props
 		let {fields, types, operators, allowInput, moreConfig} = config;
 		let fieldName = _.get(data, 'field.value');
 		let type = _.get(types, fieldName);

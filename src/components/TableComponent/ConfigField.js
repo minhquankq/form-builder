@@ -93,7 +93,7 @@ export default class ConfigField extends Component {
 				</Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} backdrop={'static'}>
           <ModalHeader toggle={this.toggle}><i className="fa fa-eye" aria-hidden="true"/> Display fields</ModalHeader>
-          <ModalBody>
+          <ModalBody className="modal-scrollable">
 						{/* Content will be here */}
 						{this.renderContent()}
           </ModalBody>

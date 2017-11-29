@@ -16,11 +16,10 @@ import Select from 'react-select';
 import Datetime from 'react-datetime'
 
 import {ActionCreators} from '../../actions'
-import FilterRow from './FilterRow';
+import FilterComponent from './FilterComponent';
 
+let CONFIG = {"fields":[{"value":"ticket_id","name":"ID"},{"value":"title","name":"Title"},{"value":"description","name":"Description"},{"value":"status","name":"Status"},{"value":"ticket_category_code","name":"Category"},{"value":"product_info.alias","name":"Product"},{"value":"fid_info.name","name":"Fabric"},{"value":"requester","name":"Requester"},{"value":"priority_id","name":"Priority"},{"value":"source_from","name":"Source from"},{"value":"is_service_catalog_request","name":"Is Service Catelog Request"},{"value":"assigned_to.email","name":"Assignee"},{"value":"expected_at","name":"Expected At"},{"value":"created_at","name":"Created At"},{"value":"closed_at","name":"Closed At"}],"types":{"ticket_id":"String","title":"String","description":"String","status":"Array","ticket_category_code":"Array","product_info.alias":"String","fid_info.name":"String","requester":"String","priority_id":"Array","source_from":"String","is_service_catalog_request":"Boolean","assigned_to.email":"Array","expected_at":"Datetime","created_at":"Datetime","closed_at":"Datetime"},"operators":{"Datetime":["At","NotAt","Before","BeforeOrAt","After","AfterOrAt","InThePast","InTheFuture","Empty","NotEmpty"],"Array":["Includes","Excepts","Anything","Empty","NotEmpty"],"String":["Equals","NotEquals","Empty","NotEmpty","StartsWith","EndsWith","Contains","NotContains","Anything","Same","Different"],"Boolean":["IsTrue","IsFalse","Anything","Empty","NotEmpty"]},"allowInput":{"Datetime":["At","NotAt","Before","BeforeOrAt","After","AfterOrAt"],"Array":["Includes","Excepts"],"String":["Equals","NotEquals","StartsWith","EndsWith","Contains","NotContains","Same","Different"]}}
 const dialogName = 'filter'
-const OR = 'or'
-const AND = 'and'
 class AdvanceFilter extends Component {
 	constructor(props) {
     super(props);
@@ -35,10 +34,6 @@ class AdvanceFilter extends Component {
 		}
 	}
 
-	componentDidMount() {
-
-	}
-
 	toggle() {
     let {show, actions} = this.props;
     if(show) {
@@ -47,7 +42,7 @@ class AdvanceFilter extends Component {
       actions.showDialog(dialogName)
     }
 	}
-	
+
 	openModal() {
     // let {config, actions} = this.props
     // if(_.isEmpty(config)) {
@@ -56,7 +51,7 @@ class AdvanceFilter extends Component {
     // }
     this.toggle();
 	}
-	
+
 	handleSubmit() {
 		console.log(this.state.data)
 		// let {url, data, actions} = this.props
@@ -65,135 +60,17 @@ class AdvanceFilter extends Component {
 		this.toggle();
 	}
 
-	handleChange(filter, key) {
-		let data = this.state.data
-		_.set(data, key, filter)
-
-		this.setState({
-			data
-		})
-	}
-
-	addMore(type, level, key) {
-		let {data} = this.state
-		if(level === 1) { // ingnore type
-			let d = _.get(data, OR)
-			d.push({})
-			_.set(data, OR, d)
-		} else {
-			let parent = key[key.length -2]
-			if(type === parent) {
-				let parentKey = _.dropRight(key)
-				let d = _.get(data, parentKey)
-				d.push({})
-				_.set(data, parentKey, d)
-			} else {
-				let d = _.get(data, key)
-				let _d = {}
-				_d[type] = [d, {}]
-				_.set(data, key, _d)
-			}
-		}
-		
-		this.setState({data})
-	}
-
-	removeFilter(key) {
-		let {data} = this.state
-		_.unset(data, key)
-
-		let parentKey = _.dropRight(key)
-		let parentData = _.get(data, parentKey)
-		parentData = parentData.filter(d => !_.isUndefined(d))
-		_.set(data, parentKey, parentData)
-		
-		this.setState({data})
-	}
-
-	renderValueInput(type, data, key) {
-		let Component = null;
-		switch(type) {
-			case "String":
-				Component = <Input
-											value={data.value}
-											onChange={(v) => this.handleChange(v.target.value, 'value', key)}
-										/>
-				break;
-			case "Array":
-				Component = <Select />
-				break;
-			case "Datetime":
-				Component = <Datetime  />
-				break;
-			default:
-		}
-		return (
-			<div>
-				{Component}
-				<FormText>Value</FormText>
-			</div>
-			
-		);
-	}
-
-	renderFilterRow(data, key, level) {
-		return (
-			<div className="row" key={key}>
-				<div className="col-md-9">
-					<FilterRow data={data} filterChange={filter => this.handleChange(filter, key)}/>
-				</div>
-				<div className="filter-action-panel col-md-3">
-					<Button outline color="info" onClick={this.addMore.bind(this, AND, 2, key)}>And</Button>{' '}
-					<Button outline color="info" onClick={this.addMore.bind(this, OR, 2, key)}>Or</Button>{' '}
-					<Button outline color="danger" onClick={this.removeFilter.bind(this, key)}><i className="fa fa-times" /></Button>
-				</div>
-			</div>
-		)
-	}
-
-	renderFilter(data, key, level) {
-		if(Array.isArray(data)) {
-			// data is array
-			let arrRowFilter = data.map((d, i) => this.renderFilter(d, _.concat(key, i), level));
-			let labelClassName = 'condition-label '
-			let filterClassName = 'filter-panel '
-			if(data.length !== 1) {
-				labelClassName += 'col-md-1'
-				filterClassName += 'col-md-11'
-			} else {
-				filterClassName += 'col-md-12'
-			}
-			return (
-				<div className="row" key={key}>
-					<div className={labelClassName}>
-						{data.length !== 1 && <span>{key[key.length -1]}</span>} 
-					</div>
-					<div className={filterClassName}>
-						{arrRowFilter}
-					</div>
-				</div>
-			)
-		} else {
-			// data is object
-			if(!_.isEmpty(data[OR])) {
-				// data has key $or
-				return this.renderFilter(data[OR], _.concat(key,OR), level + 1)
-			} else if(!_.isEmpty(data[AND])) {
-					// data has key $and
-					return this.renderFilter(data[AND], _.concat(key,AND), level + 1)
-			} else {
-				// data is filter row
-				return this.renderFilterRow(data, key, level)
-			}
-		}
-	}
-	
 	renderContent() {
 		let {data} = this.state;
     return (
       <div>
 				{/* Content will be put here */}
-				{this.renderFilter(data[OR], [OR], 1)}
+				<FilterComponent 
+					data={data} 
+					onChange={d => this.setState({data: d})}
+					simple={false}
+					config={CONFIG}
+					/>
       </div>
     )
 	}

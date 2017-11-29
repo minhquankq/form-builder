@@ -36,7 +36,17 @@ export default class ConfigField extends Component {
 	}
 
   toggle() {
-    this.setState({modal: !this.state.modal});
+		let {modal, data} = this.state
+		let fields = this.props.fields
+		if(!modal) {
+			if(_.isEmpty(data)) {
+				data = {}
+				fields.forEach(f => {
+					data[f.name] = true
+				})
+			}
+		}
+    this.setState({modal: !modal, data: data});
 	}
 
 	handleSubmit() {
@@ -54,13 +64,12 @@ export default class ConfigField extends Component {
 		if(!this.state.modal) return null;
 		let {fields} = this.props
 		let {data} = this.state
-		console.log(data)
 		let fieldsComponent = fields.map(f => {
 			return (
 				<FormGroup key={f.name}>
 					<Label> 
 						<Input type="checkbox" 
-							value={data[f.name]}
+							// value={data[f.name]}
 							onChange={e => this.onChange(f.name, e.target.checked)}
 							checked={data[f.name]}
 							 />
@@ -101,5 +110,5 @@ export default class ConfigField extends Component {
 ConfigField.propTypes = {
 	fields: PropTypes.array.isRequired,
 	submit: PropTypes.func.isRequired,
-	data: PropTypes.array
+	data: PropTypes.object
 }

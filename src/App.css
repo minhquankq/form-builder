@@ -47,14 +47,12 @@
 }
 
 .table-fixed {
-  max-height: 500px;
-  width: 100%;
-  overflow-y: auto;
-  overflow-x: auto;
-  display: block;
+  height: 300px;
+  overflow: auto;
 }
+
 .table th {
-  min-width: 140px;
+  min-width: 200px;
 }
 
 .sortable, .sort-increase, .sort-decrease {
@@ -134,4 +132,12 @@
 
 .filter-action-panel {
   text-align: right;
+}
+
+.scoll-table-column {
+  width: 250px;
+}
+
+.simple-filter-panel {
+  margin: 10px 15px 10px 10px;
 }

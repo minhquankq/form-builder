@@ -9,12 +9,16 @@ import { Button } from 'reactstrap';
 // import logo from '../../logo.svg';
 import { ActionCreators } from '../../actions';
 
+
+import StickyTable from './StickyTable';
+import ScrollDataTable from './ScrollDataTable'
 import DataTable from './DataTable'
 import TablePagination from './TablePagination';
 import ConfigField from './ConfigField';
 import Create from './Create';
 import Edit from './Edit';
-import Filter from './Filter'
+import AdvanceFilter from './AdvanceFilter'
+import SimpleFilter from './SimpleFilter';
 
 class TableComponent extends Component {
 	constructor(props) {
@@ -27,6 +31,12 @@ class TableComponent extends Component {
 	componentDidMount() {
 		let {actions, url} = this.props
 		actions.loadDataTable(url, 1)
+	}
+
+	handleReload(sort, filter) {
+		let {actions, url, pagination} = this.props
+		this.setState({filter, sort})
+		actions.loadDataTable(url, pagination.page || 1, filter, sort)
 	}
 
 	handleChangePage(page) {
@@ -87,8 +97,8 @@ class TableComponent extends Component {
 					fields={this.props.data.fields || []}
 					submit={showFields => this.setState({showFields: showFields})}
 					data={this.state.showFields} />
-				<Filter url={this.props.url} />	
-				<Create url={this.props.url} />
+				<AdvanceFilter url={this.props.url} />	
+				{/* <Create url={this.props.url} /> */}
 				<div>
 					<Button outline color="info" onClick={this.reload.bind(this)} >
 						<i className="fa fa-refresh"/> Reload
@@ -101,35 +111,35 @@ class TableComponent extends Component {
 	renderTableAndPagination() {
 		let {data, fields} = this.props.data
 		let {showFields, sort} = this.state
-		let tableComponent = null;
+		// let tableComponent = null;
 
-		// if(this.props.loading) {
-		// 	loadingComponent = 
-		// 		<div className="loading">
-		// 			<img src={logo} className="App-logo" alt="logo" />
-		// 		</div>
-		// } 
-		if(!_.isEmpty(data) || !_.isEmpty(fields)) {
-			if(!_.isEmpty(showFields)) {
-				fields = fields.filter(f => showFields[f.name] === true)
-			}
-			tableComponent = (
-				<div>
-					<DataTable 
-						data={data} 
-						fields={fields}
-						sort={sort}
-						filterData={this.handleFilter.bind(this)} 
-						sortChange={this.handleSortChange.bind(this)}
-						handleAction={this.handleAction.bind(this)}
-						/>
-					<TablePagination 
-						{...this.props.pagination} 
-						handleChangePage={this.handleChangePage.bind(this)} 
-						/>
-				</div>
-			)
+		// if(!_.isEmpty(data) || ) {
+		if(!_.isEmpty(fields) && !_.isEmpty(showFields)  ) {
+			fields = fields.filter(f => showFields[f.name] === true)
 		}
+		let tableComponent = (
+			<div>
+				{/* <DataTable 
+					data={data || []} 
+					fields={fields || []}
+					sort={sort}
+					filterData={this.handleFilter.bind(this)} 
+					sortChange={this.handleSortChange.bind(this)}
+					handleAction={this.handleAction.bind(this)}
+					/> */}
+				<ScrollDataTable 
+					data={_.concat([],data)} 
+					fields={fields}
+					handleReload={this.handleReload.bind(this)}
+					handleAction={this.handleAction.bind(this)}
+					/>
+				<TablePagination 
+					{...this.props.pagination} 
+					handleChangePage={this.handleChangePage.bind(this)} 
+				/>
+			</div>
+		)
+		// }
 		return (
 			<div>
 				<Loading show={this.props.loading} color="red" />
@@ -142,6 +152,7 @@ class TableComponent extends Component {
 		return (
 			<div>
 				{this.renderHeaderActions()}
+				<SimpleFilter />
 				{this.renderTableAndPagination()}
 				<Edit url={this.props.url} />
 			</div>
@@ -158,7 +169,7 @@ export default connect(
 		return {
 			data: _.get(state, 'TableComponent.data', {}),
 			loading: _.get(state, 'TableComponent.loading'),
-			pagination: _.get(state, 'TableComponent.pagination', {}),
+			pagination: _.get(state, 'TableComponent.pagination', {page: 0, total: 0}),
 			display: _.get(state, 'form.ConfigDisplayForm.values')
 		}
 	},

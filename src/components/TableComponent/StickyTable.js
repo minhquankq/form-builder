@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Table } from 'reactstrap'
 import _ from 'lodash'
 
-export default class DataTable extends Component {
+import { StickyTable, Row, Cell } from 'react-sticky-table';
+import 'react-sticky-table/dist/react-sticky-table.css';
+
+
+export default class ScrollDataTable extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			filter: {}
+			filters: {}
 		}
 	}
-	
+
 	handleFilterChange(key, value) {
 		let filter = this.state.filter || {};
 		filter[key] = value;
@@ -32,52 +35,6 @@ export default class DataTable extends Component {
 		this.timer = setTimeout(() => {
 			this.props.filterData(filter);
 		}, 500)
-	}
-
-	renderTableHeader() {
-		let {fields, sort} = this.props
-		let fieldsComponent = fields.map(f => {
-			if(f.sortable === true) {
-				let sortClassName = 'sortable';
-				if(sort[f.name] === 1) {
-					sortClassName = 'sort-increase'
-				} else if(sort[f.name] === -1) {
-					sortClassName = 'sort-decrease'
-				}
-				return <th 
-									className={sortClassName} 
-									key={f.name}
-									onClick={this.handleSort.bind(this, f.name)}
-								>{f.label}</th>
-			} else {
-				return <th key={f.name}>{f.label}</th>
-			}
-			
-		})
-		// let filterComponent = fields.map(f => {
-		// 	if(f.searchable) {
-		// 		return (
-		// 			<th key={f.name}>
-		// 				<input
-		// 					onChange={value => this.handleFilterChange(f.name, value.target.value)} />
-		// 			</th>
-		// 		)
-		// 	} else {
-		// 		return <th key={f.name}></th>
-		// 	}
-		// })
-		return (
-			<thead>
-				<tr>
-					{fieldsComponent}
-					<th>Actions</th>
-				</tr>
-				{/* <tr>
-					{filterComponent}
-					<th></th>
-				</tr> */}
-			</thead>
-		)
 	}
 
 	renderValue(value, isList) {
@@ -108,43 +65,85 @@ export default class DataTable extends Component {
 		}
 	}
 
+	renderTableHeader() {
+		let {fields, sort} = this.props
+		let fieldsComponent = fields.map(f => {
+			if(f.sortable === true) {
+				let sortClassName = 'sortable';
+				if(sort[f.name] === 1) {
+					sortClassName = 'sort-increase'
+				} else if(sort[f.name] === -1) {
+					sortClassName = 'sort-decrease'
+				}
+				return <Cell 
+									className={sortClassName} 
+									key={f.name}
+									onClick={this.handleSort.bind(this, f.name)}
+								>{f.label}</Cell>
+			} else {
+				return <Cell key={f.name}>{f.label}</Cell>
+			}
+			
+		})
+		let filterComponent = fields.map(f => {
+			if(f.searchable) {
+				return (
+					<Cell key={f.name}>
+						<input
+							onChange={value => this.handleFilterChange(f.name, value.target.value)} />
+					</Cell>
+				)
+			} else {
+				return <Cell key={f.name}></Cell>
+			}
+		})
+		return (
+			<thead>
+				<Row>
+					{fieldsComponent}
+					<Cell>Actions</Cell>
+				</Row>
+				<Row>
+					{filterComponent}
+					<Cell></Cell>
+				</Row>
+			</thead>
+		)
+	}
+
 	renderTableContent() {
 		let {fields, data} = this.props
 		let tableRowComponent = data.map((d, index) => {
 			let cellComponent = fields.map((f, index) => {
-				return (<td key={index}>{this.renderValue(_.get(d,f.name))}</td>)
+				return (<Cell key={index}>{this.renderValue(_.get(d,f.name))}</Cell>)
 			})
 			return (
-				<tr key={index}>
+				<Row key={index}>
 					{cellComponent}
-					<td>
+					{/* <Cell>
 						<i onClick={()=>this.props.handleAction('edit', d)} className="btn fa fa-pencil table-row-action edit" />
 						<i onClick={()=>this.props.handleAction('delete', d)} className="btn fa fa-trash table-row-action delete" />
-					</td>
-				</tr>
+					</Cell> */}
+				</Row>
 			)
 		})
-		return (
-			<tbody className="">
-				{tableRowComponent}
-			</tbody>
-		)
+		return tableRowComponent
 	}
+
 	render() {
+		let {data, fields} = this.props
 		return (
-			<div>
-			<div className="table-fixed">
-			<Table striped hover className="table table-component ">
-				{this.renderTableHeader()}
-				{this.renderTableContent()}
-			</Table>
-			</div>
+			<div style={{width: '100%', height: '400px'}}>
+				<StickyTable>
+					{/* {this.renderTableHeader()} */}
+					{this.renderTableContent()}
+        </StickyTable>
 			</div>
 		)
 	}
 }
 
-DataTable.propTypes = {
+ScrollDataTable.propTypes = {
 	data: PropTypes.array.isRequired,
 	fields: PropTypes.array.isRequired,
 	filterData: PropTypes.func.isRequired,

@@ -16,10 +16,12 @@ import Select from 'react-select';
 import Datetime from 'react-datetime'
 
 import {ActionCreators} from '../../actions'
+import FilterRow from './FilterRow';
 
 const dialogName = 'filter'
-let config = {"fields":[{"value":"ticket_id","name":"ID"},{"value":"title","name":"Title"},{"value":"description","name":"Description"},{"value":"status","name":"Status"},{"value":"ticket_category_code","name":"Category"},{"value":"product_info.alias","name":"Product"},{"value":"fid_info.name","name":"Fabric"},{"value":"requester","name":"Requester"},{"value":"priority_id","name":"Priority"},{"value":"source_from","name":"Source from"},{"value":"is_service_catalog_request","name":"Is Service Catelog Request"},{"value":"assigned_to.email","name":"Assignee"},{"value":"expected_at","name":"Expected At"},{"value":"created_at","name":"Created At"},{"value":"closed_at","name":"Closed At"}],"types":{"ticket_id":"String","title":"String","description":"String","status":"Array","ticket_category_code":"Array","product_info.alias":"String","fid_info.name":"String","requester":"String","priority_id":"Array","source_from":"String","is_service_catalog_request":"Boolean","assigned_to.email":"Array","expected_at":"Datetime","created_at":"Datetime","closed_at":"Datetime"},"operators":{"Datetime":["At","NotAt","Before","BeforeOrAt","After","AfterOrAt","InThePast","InTheFuture","Empty","NotEmpty"],"Boolean":["IsTrue","IsFalse","Anything","Empty","NotEmpty"],"String":["Equals","NotEquals","Empty","NotEmpty","StartsWith","EndsWith","Contains","NotContains","Anything","Same","Different"],"Array":["Includes","Excepts","Anything","Empty","NotEmpty"]},"allowInput":{"Datetime":["At","NotAt","Before","BeforeOrAt","After","AfterOrAt"],"String":["Equals","NotEquals","StartsWith","EndsWith","Contains","NotContains","Same","Different"],"Array":["Includes","Excepts"]}}
-class Filter extends Component {
+const OR = 'or'
+const AND = 'and'
+class AdvanceFilter extends Component {
 	constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this)
@@ -28,23 +30,13 @@ class Filter extends Component {
 		
 		this.state = {
 			data: {
-							'$or': [{}]
+							'or': [{}]
 						}
 		}
 	}
 
 	componentDidMount() {
-		let operators = config.operators
-		for(let type in operators) {
-			let arr = operators[type]
-			operators[type] = arr.map(item => {
-				return {
-					value: item,
-					name: item
-				}
-			})
-		}
-		config.operators = operators
+
 	}
 
 	toggle() {
@@ -73,11 +65,9 @@ class Filter extends Component {
 		this.toggle();
 	}
 
-	handleChange(value, name, key) {
+	handleChange(filter, key) {
 		let data = this.state.data
-		let d = _.get(data, key)
-		d[name] = value
-		_.set(data, key, d)
+		_.set(data, key, filter)
 
 		this.setState({
 			data
@@ -87,9 +77,9 @@ class Filter extends Component {
 	addMore(type, level, key) {
 		let {data} = this.state
 		if(level === 1) { // ingnore type
-			let d = _.get(data, '$or')
+			let d = _.get(data, OR)
 			d.push({})
-			_.set(data, '$or', d)
+			_.set(data, OR, d)
 		} else {
 			let parent = key[key.length -2]
 			if(type === parent) {
@@ -147,41 +137,14 @@ class Filter extends Component {
 	}
 
 	renderFilterRow(data, key, level) {
-		let {fields, types, operators} = config;
-		let fieldName = _.get(data, 'field.value');
-		let type = types[fieldName];
 		return (
 			<div className="row" key={key}>
-				<div className="fields col-md-3">
-					<Select
-						name="fields"
-						options={fields}
-						onChange={(v) => this.handleChange(v, 'field', key)}
-						labelKey={'name'}
-						valueKey={'value'}
-						placeholder={'Select field'}
-						value={data.field}
-					/>
-					 <FormText>Choose fields</FormText>
-				</div>
-				<div className="operator col-md-3">
-					<Select
-						name="operator"
-						options={operators[type]} // TODO
-						onChange={(v) => this.handleChange(v && v.value, 'operator', key)}
-						labelKey={'name'}
-						valueKey={'value'}
-						placeholder={'Select operator'}
-						value={data.operator}
-					/>
-					 <FormText>Choose operator</FormText>
-				</div>
-				<div className="value col-md-3">
-					{this.renderValueInput(type, data, key)}
+				<div className="col-md-9">
+					<FilterRow data={data} filterChange={filter => this.handleChange(filter, key)}/>
 				</div>
 				<div className="filter-action-panel col-md-3">
-					<Button outline color="info" onClick={this.addMore.bind(this, '$and', 2, key)}>And</Button>{' '}
-					<Button outline color="info" onClick={this.addMore.bind(this, '$or', 2, key)}>Or</Button>{' '}
+					<Button outline color="info" onClick={this.addMore.bind(this, AND, 2, key)}>And</Button>{' '}
+					<Button outline color="info" onClick={this.addMore.bind(this, OR, 2, key)}>Or</Button>{' '}
 					<Button outline color="danger" onClick={this.removeFilter.bind(this, key)}><i className="fa fa-times" /></Button>
 				</div>
 			</div>
@@ -212,12 +175,12 @@ class Filter extends Component {
 			)
 		} else {
 			// data is object
-			if(!_.isEmpty(data['$or'])) {
+			if(!_.isEmpty(data[OR])) {
 				// data has key $or
-				return this.renderFilter(data['$or'], _.concat(key,'$or'), level + 1)
-			} else if(!_.isEmpty(data['$and'])) {
+				return this.renderFilter(data[OR], _.concat(key,OR), level + 1)
+			} else if(!_.isEmpty(data[AND])) {
 					// data has key $and
-					return this.renderFilter(data['$and'], _.concat(key,'$and'), level + 1)
+					return this.renderFilter(data[AND], _.concat(key,AND), level + 1)
 			} else {
 				// data is filter row
 				return this.renderFilterRow(data, key, level)
@@ -230,7 +193,7 @@ class Filter extends Component {
     return (
       <div>
 				{/* Content will be put here */}
-				{this.renderFilter(data['$or'], ['$or'], 1)}
+				{this.renderFilter(data[OR], [OR], 1)}
       </div>
     )
 	}
@@ -249,7 +212,10 @@ class Filter extends Component {
 		return (
       <div>
         <Button outline color="info" onClick={this.openModal}>
-          <i className="fa fa-filter" aria-hidden="true"></i>{' '}Filter
+          <i className="fa fa-filter" aria-hidden="true"></i>{' '}Advance Filter
+        </Button>
+				<Button outline color="info" onClick={this.openModal}>
+          <i className="fa fa-eraser" aria-hidden="true"></i>{' '}Clear Filter
         </Button>
         <Modal
           isOpen={this.props.show}
@@ -258,7 +224,7 @@ class Filter extends Component {
           backdrop="static">
           <ModalHeader toggle={this.toggle}>
             <i className="fa fa-filter" aria-hidden="true"/>{' '}
-            Filter
+            Advance Filter
           </ModalHeader>
           <ModalBody>
             {/* Content will be here */}
@@ -275,7 +241,7 @@ class Filter extends Component {
 	}
 }
 
-Filter.propTypes = {
+AdvanceFilter.propTypes = {
 	url: PropTypes.string
 }
 
@@ -291,4 +257,4 @@ export default connect(state => {
     }
   },
   dispatch => ({ actions: bindActionCreators(ActionCreators, dispatch), dispatch })
-)(Filter)
+)(AdvanceFilter)

@@ -8,6 +8,8 @@ import thunk from 'redux-thunk'
 import 'react-dates/initialize';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'react-dates/lib/css/_datepicker.css';
+import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/omega/theme.css';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';

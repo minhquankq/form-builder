@@ -4,6 +4,7 @@ import {
 	Collapse, 
 	Button,
 } from 'reactstrap';
+import _ from 'lodash'
 
 import FilterComponent from './FilterComponent';
 
@@ -16,7 +17,7 @@ export default class SimpleFilter extends Component {
     this.toggle = this.toggle.bind(this);
     this.state = { 
 			collapse: false,
-			data: INIT_DATA
+			data: _.cloneDeep(INIT_DATA)
 		};
   }
 
@@ -43,7 +44,7 @@ export default class SimpleFilter extends Component {
 						/>
 					
 					<Button color="link" onClick={()=>console.log(this.state.data)}><i className="fa fa-check" /></Button>
-					<Button color="link" onClick={() => this.setState({data: INIT_DATA})}><i className="fa fa-times" style={{color: 'red'}} /></Button>
+					<Button color="link" onClick={() => this.setState({data: _.cloneDeep(INIT_DATA)})}><i className="fa fa-times" style={{color: 'red'}} /></Button>
 				</Collapse>
 			</div>
 		)

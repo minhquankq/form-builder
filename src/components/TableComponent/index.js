@@ -9,13 +9,11 @@ import { Button } from 'reactstrap';
 // import logo from '../../logo.svg';
 import { ActionCreators } from '../../actions';
 
-
-import StickyTable from './StickyTable';
-import ScrollDataTable from './ScrollDataTable'
+// import ScrollDataTable from './ScrollDataTable'
 import DataTable from './DataTable'
+// import Create from './Create';
 import TablePagination from './TablePagination';
 import ConfigField from './ConfigField';
-import Create from './Create';
 import Edit from './Edit';
 import AdvanceFilter from './AdvanceFilter'
 import SimpleFilter from './SimpleFilter';
@@ -24,7 +22,8 @@ class TableComponent extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			sort:{}
+			sort:{},
+			numberPage: 10
 		}
 	}
 
@@ -33,30 +32,32 @@ class TableComponent extends Component {
 		actions.loadDataTable(url, 1)
 	}
 
-	handleReload(sort, filter) {
-		let {actions, url, pagination} = this.props
-		this.setState({filter, sort})
-		actions.loadDataTable(url, pagination.page || 1, filter, sort)
-	}
-
 	handleChangePage(page) {
 		let {actions, url, pagination} = this.props
 		let {filter, sort} = this.state
 		if(page < 1 || page > pagination.total ||page === pagination.page) return;
-		actions.loadDataTable(url, page, filter, sort)
+		pagination.page = page
+		actions.loadDataTable(url, pagination, filter, sort)
+	}
+
+	handleNumPerPageChange(num) {
+		let {actions, url, pagination} = this.props
+		let {filter, sort} = this.state
+		pagination.numPerpage = num
+		actions.loadDataTable(url, pagination, filter, sort)
 	}
 
 	reload() {
 		let {actions, url, pagination} = this.props
 		let {filter, sort} = this.state
-		actions.loadDataTable(url, pagination.page, filter, sort)
+		actions.loadDataTable(url, pagination, filter, sort)
 	}
 
 	handleFilter(filter) {
 		let {actions, url, pagination} = this.props
 		let {sort} = this.state
 		this.setState({filter})
-		actions.loadDataTable(url, pagination.page, filter, sort)
+		actions.loadDataTable(url, pagination, filter, sort)
 	}
 
 	handleSortChange(fieldName) {
@@ -73,7 +74,7 @@ class TableComponent extends Component {
 			}
 		}
 		this.setState({sort})
-		actions.loadDataTable(url, pagination.page, filter, sort)
+		actions.loadDataTable(url, pagination, filter, sort)
 	}
 
 	handleAction(actionName, value) {
@@ -119,22 +120,16 @@ class TableComponent extends Component {
 		}
 		let tableComponent = (
 			<div>
-				{/* <DataTable 
+				<DataTable 
 					data={data || []} 
 					fields={fields || []}
 					sort={sort}
-					filterData={this.handleFilter.bind(this)} 
 					sortChange={this.handleSortChange.bind(this)}
-					handleAction={this.handleAction.bind(this)}
-					/> */}
-				<ScrollDataTable 
-					data={_.concat([],data)} 
-					fields={fields}
-					handleReload={this.handleReload.bind(this)}
 					handleAction={this.handleAction.bind(this)}
 					/>
 				<TablePagination 
 					{...this.props.pagination} 
+					onChangeNumPerPage={this.handleNumPerPageChange.bind(this)}
 					handleChangePage={this.handleChangePage.bind(this)} 
 				/>
 			</div>

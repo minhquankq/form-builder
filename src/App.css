@@ -47,12 +47,12 @@
 }
 
 .table-fixed {
-  height: 300px;
+  height: 450px;
   overflow: auto;
 }
-
-.table th {
-  min-width: 200px;
+.table-header-fixed {
+  overflow: hidden;
+  margin-bottom: -17px;
 }
 
 .sortable, .sort-increase, .sort-decrease {
@@ -74,12 +74,7 @@
   content: ' \00a0\f161';
 }
 
-.loading {
-  position: absolute;
-  left: 0;
-}
-
-.header-actions, .header-actions > div{
+.header-actions, .header-actions > div {
   margin: 5px;
 }
 
@@ -109,7 +104,8 @@
 }
 
 .table-component{
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2); */
+  table-layout: fixed
 }
 
 .big-modal {
@@ -140,4 +136,14 @@
 
 .simple-filter-panel {
   margin: 10px 15px 10px 10px;
+}
+
+.select-num-per-page {
+  width: 70px;
+}
+
+.table-pagination > div {
+  display: inline;
+  float: right;
+  margin: 10px;
 }

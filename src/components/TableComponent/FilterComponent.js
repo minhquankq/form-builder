@@ -1,30 +1,17 @@
 import React, { Component } from 'react'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
-import {
-	Button, 
-	Modal, 
-	ModalHeader, 
-	ModalBody, 
-	ModalFooter, 
-	FormText,
-	Input
-} from 'reactstrap';
-import Select from 'react-select';
-import Datetime from 'react-datetime'
+import {Button} from 'reactstrap'
 
-import {ActionCreators} from '../../actions'
 import FilterRow from './FilterRow';
 
 const OR = 'or'
 const AND = 'and'
 
 export default class FilterComponent extends Component {
-	constructor(props) {
-    super(props);
-	}
+	// constructor(props) {
+  //   super(props);
+	// }
 
 	handleChange(filter, key) {
 		let data = this.props.data
@@ -76,7 +63,7 @@ export default class FilterComponent extends Component {
 				<div className="col-md-9">
 					<FilterRow 
 						data={data} 
-						filterChange={filter => this.handleChange(filter, key)} 
+						onChange={filter => this.handleChange(filter, key)} 
 						config={this.props.config}/>
 				</div>
 				<div className="filter-action-panel col-md-3">
@@ -138,5 +125,8 @@ export default class FilterComponent extends Component {
 }
 
 FilterComponent.propTypes = {
-	config: PropTypes.object
+	data: PropTypes.object.isRequired,
+	onChange: PropTypes.func.isRequired,
+	config: PropTypes.object.isRequired,
+	simple: PropTypes.bool
 }

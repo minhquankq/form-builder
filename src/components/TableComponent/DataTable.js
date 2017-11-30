@@ -1,37 +1,43 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types'
 import { Table } from 'reactstrap'
 import _ from 'lodash'
+
+import TableCellTemplate from '../../services/tableCellTemplate'
 
 export default class DataTable extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			filter: {}
+			filter: {},
+			isShowSubTable: {}
 		}
 	}
-	
-	handleFilterChange(key, value) {
-		let filter = this.state.filter || {};
-		filter[key] = value;
-		// call api to filter data
-		this.setState({
-			filter: filter
-		})
-		this.filterData(filter)
+
+	componentDidMount() {
+		ReactDOM.findDOMNode(this.dataTable).addEventListener('scroll', e => {
+			let headerDom = ReactDOM.findDOMNode(this.headerTable)
+			if(headerDom) {
+				headerDom.scroll({left: e.srcElement.scrollLeft})
+			}
+		});
+	}
+
+	showSubTable(index) {
+		let {isShowSubTable} = this.state
+		isShowSubTable[index] = !isShowSubTable[index];
+		this.setState({isShowSubTable})
 	}
 
 	handleSort(fieldName) {
-		this.props.sortChange(fieldName);
+		if(this.props.sortChange) {
+			this.props.sortChange(fieldName);
+		}
 	}
 
-	filterData(filter) {
-		if(_.isEmpty(this.timer)) {
-			clearTimeout(this.timer)
-		}
-		this.timer = setTimeout(() => {
-			this.props.filterData(filter);
-		}, 500)
+	cellTemplate(row, field) {
+		return TableCellTemplate(row, field);
 	}
 
 	renderTableHeader() {
@@ -48,80 +54,66 @@ export default class DataTable extends Component {
 									className={sortClassName} 
 									key={f.name}
 									onClick={this.handleSort.bind(this, f.name)}
+									style={{width: 200}}
 								>{f.label}</th>
 			} else {
-				return <th key={f.name}>{f.label}</th>
+				return <th key={f.name} style={{width: 200}}>{f.label}</th>
 			}
 			
 		})
-		// let filterComponent = fields.map(f => {
-		// 	if(f.searchable) {
-		// 		return (
-		// 			<th key={f.name}>
-		// 				<input
-		// 					onChange={value => this.handleFilterChange(f.name, value.target.value)} />
-		// 			</th>
-		// 		)
-		// 	} else {
-		// 		return <th key={f.name}></th>
-		// 	}
-		// })
+
 		return (
 			<thead>
 				<tr>
 					{fieldsComponent}
-					<th>Actions</th>
+					<th style={{width: 200}}>Actions</th>
 				</tr>
-				{/* <tr>
-					{filterComponent}
-					<th></th>
-				</tr> */}
 			</thead>
 		)
 	}
 
-	renderValue(value, isList) {
-		if(typeof(value) === 'string') {
-			if(isList) {
-				return <li key={value}>{value}</li>
-			} else {
-				return <span key={value}>{value}</span>;
-			}
-		} else if (typeof(value) === 'object') {
-			if(Array.isArray(value)) {
-				// Array
-				let itemComponent = value.map(v => this.renderValue(v, true));
-				return (
-					<ul>
-						{itemComponent}
-					</ul>
-				)
-			} else {
-				// Object
-				let itemComponent = _.keys(value).map(k => <li key={k}><strong>{k}</strong> {this.renderValue(value[k])}</li>)
-				return (
-					<ul key={Math.random()}>
-						{itemComponent}
-					</ul>
-				) 
-			}
-		}
-	}
-
 	renderTableContent() {
+		let {isShowSubTable} = this.state
 		let {fields, data} = this.props
+		let fieldLength = fields.length + 1
 		let tableRowComponent = data.map((d, index) => {
 			let cellComponent = fields.map((f, index) => {
-				return (<td key={index}>{this.renderValue(_.get(d,f.name))}</td>)
+				return (<td key={index} style={{width: 200}}>{this.cellTemplate(d, f)}</td>)
 			})
 			return (
-				<tr key={index}>
-					{cellComponent}
-					<td>
-						<i onClick={()=>this.props.handleAction('edit', d)} className="btn fa fa-pencil table-row-action edit" />
-						<i onClick={()=>this.props.handleAction('delete', d)} className="btn fa fa-trash table-row-action delete" />
-					</td>
-				</tr>
+					[<tr key={index} onClick={this.showSubTable.bind(this, index)}>
+						{cellComponent}
+						<td style={{width: 200}}>
+							<i onClick={()=>this.props.handleAction('edit', d)} className="btn fa fa-pencil table-row-action edit" />
+							<i onClick={()=>this.props.handleAction('delete', d)} className="btn fa fa-trash table-row-action delete" />
+						</td>
+					</tr>,
+					isShowSubTable[index] === true ? 
+					<tr key={'sub' + index}>
+						<td colSpan={fieldLength}>
+						<table size="sm">
+								<thead>
+								<tr>
+									<td>id</td>
+									<td>title</td>
+									<td>description</td>
+									<td>email</td>
+									<td>ola</td>
+								</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>id</td>
+										<td>title</td>
+										<td>description description</td>
+										<td>email@vng.com.vn</td>
+										<td>ola</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr> : null
+					]
 			)
 		})
 		return (
@@ -133,12 +125,17 @@ export default class DataTable extends Component {
 	render() {
 		return (
 			<div>
-			<div className="table-fixed">
-			<Table striped hover className="table table-component ">
-				{this.renderTableHeader()}
-				{this.renderTableContent()}
-			</Table>
-			</div>
+				<div ref={(headerTable) => { this.headerTable = headerTable; }} className="table-header-fixed">
+					<Table className="table table-component ">
+						{this.renderTableHeader()}
+					</Table>
+				</div>
+				<div className="table-fixed" ref={(dataTable) => { this.dataTable = dataTable; }}>
+					<Table striped inverse bordered className="table table-component ">
+						{/* {this.renderTableHeader()} */}
+						{this.renderTableContent()}
+					</Table>
+				</div>
 			</div>
 		)
 	}
@@ -147,6 +144,7 @@ export default class DataTable extends Component {
 DataTable.propTypes = {
 	data: PropTypes.array.isRequired,
 	fields: PropTypes.array.isRequired,
-	filterData: PropTypes.func.isRequired,
-	sortChange: PropTypes.func.isRequired
+	sortChange: PropTypes.func.isRequired,
+	subTable: PropTypes.bool,
+	subTableKey: PropTypes.string
 }

@@ -3,14 +3,10 @@ import PropTypes from 'prop-types'
 import _ from 'lodash'
 import Select from 'react-select'
 import {
-	Button, 
-	FormText,
-	Input
+	FormText
 } from 'reactstrap';
 
 import * as FilterInput from '../../services/filterInput'
-
-const ALL_OPTION = {name: '*', label: 'All'}
 
 export default class FilterRow extends Component {
 	constructor(props) {
@@ -24,15 +20,13 @@ export default class FilterRow extends Component {
 	}
 
 	handleChange(value, fieldName) {
-		let {data, config} = this.props
-		let {fields, types, operators, allowInput} = config;
-		
+		let {data} = this.props
 		if(fieldName === 'field') {
+			// Clear selected
 			data = {}
 		}
 		data[fieldName] = value
-		this.setState({data})
-		this.props.filterChange(data)
+		this.props.onChange(data)
 	}
 
 	renderValueInput(type, value, props) {
@@ -100,5 +94,7 @@ export default class FilterRow extends Component {
 }
 
 FilterRow.propTypes = {
-	// config: PropTypes.array.isRequired
+	data: PropTypes.object.isRequired,
+	onChange: PropTypes.func.isRequired,
+	config: PropTypes.object.isRequired
 }

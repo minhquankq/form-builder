@@ -1,11 +1,17 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Pagination, PaginationItem, PaginationLink } from 'reactstrap'
+import { Input, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 
 const SHOW_PAGE = 3;
+const PAGES=[10,15,20,25,30]
 export default class TablePagination extends Component {
+	
 	changePage(page) {
 		this.props.handleChangePage(page)
+	}
+
+	changeNumPerPage(num) {
+		this.props.onChangeNumPerPage(num)
 	}
 
 	renderMore(isRender) {
@@ -32,23 +38,28 @@ export default class TablePagination extends Component {
 			)
 		}
 		return (
-			<div className="row">
-				<div className="col-md-6 col-sm-6">
+			<div className="table-pagination">
+				<div className="select-num-per-page">
+					<Input type="select" 
+						onChange={v => this.changeNumPerPage(v.target.value)}
+						value={this.props.numPerpage}>
+						{PAGES.map(p => <option value={p} key={p}>{p}</option>)}
+					</Input>
+				</div>
+				<div className="pagination-bar">
 					<Pagination>
 						<PaginationItem disabled={page===1} onClick={this.changePage.bind(this, page-1)}>
-							<PaginationLink previous href={'#/'+ (page -1)} />
+							<PaginationLink previous href={'#/'+ page} />
 						</PaginationItem>
 						{this.renderMore(start !== 1)}
 						{pageComponents}
 						{this.renderMore(end !== total)}
 						<PaginationItem disabled={page===total} onClick={this.changePage.bind(this, page + 1)}>
-							<PaginationLink next href={'#/'+ (page +1)} />
+							<PaginationLink next href={'#/'+ page} />
 						</PaginationItem>
 					</Pagination>
 				</div>
-				<div className="col-md-6 col-sm-6" style={{'marginTop': 10}}>
-					<i>{page} / {total}</i>
-				</div>
+				
 			</div>
 		)
 	}

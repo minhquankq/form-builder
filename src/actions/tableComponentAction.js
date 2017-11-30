@@ -10,8 +10,9 @@ import {
 
 function getPaginationObject(total, numPerpage, page) {
 	return {
-		page: page,
-		total: Math.ceil(total/numPerpage)
+		page,
+		total,
+		numPerpage
 	}
 }
 
@@ -35,13 +36,12 @@ function getFilterAndSort(filter, sort) {
 	return CryptoJS.enc.Base64.stringify(words);
 }
 
-export function loadDataTable(url, page, filter, sort) {
+export function loadDataTable(url, pagination, filter, sort) {
 	return (dispatch) => {
 		dispatch({type: LOADING_DATA_TABLE})
 		// prepare request info
-		let numPerpage = 10;
-		let requestUrl = url + '/' + numPerpage + '/' + ((page - 1) * numPerpage) + '?data=' + getFilterAndSort(filter, sort);
-		requestUrl = url;
+		let {numPerpage = 10, page = 1} = pagination
+		let requestUrl = url + '/' + numPerpage + '/' + ((page - 1) * numPerpage);
 		return HttpService.sentRequest(requestUrl)
 			.then(res => res.json(), err => console.log('An error occurded.', err))
 			.then(json => {

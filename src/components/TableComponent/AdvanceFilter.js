@@ -8,12 +8,8 @@ import {
 	Modal, 
 	ModalHeader, 
 	ModalBody, 
-	ModalFooter, 
-	FormText,
-	Input
+	ModalFooter,
 } from 'reactstrap';
-import Select from 'react-select';
-import Datetime from 'react-datetime'
 
 import {ActionCreators} from '../../actions'
 import FilterComponent from './FilterComponent';

@@ -5,7 +5,8 @@ import {
 	LOADING_DATA_TABLE, 
 	DATA_TABLE_LOADED, 
 	SHOW_DIALOG, 
-	CLOSE_DIALOG
+	CLOSE_DIALOG,
+	DATA_TABLE_LOADE_ERROR
 } from './actionTypes'
 
 function getPaginationObject(total, numPerpage, page) {
@@ -42,15 +43,25 @@ export function loadDataTable(url, pagination, filter, sort) {
 		// prepare request info
 		let {numPerpage = 10, page = 1} = pagination
 		let requestUrl = url + '/' + numPerpage + '/' + ((page - 1) * numPerpage);
+		requestUrl = url
 		return HttpService.sentRequest(requestUrl)
-			.then(res => res.json(), err => console.log('An error occurded.', err))
-			.then(json => {
-				return dispatch({
-					type: DATA_TABLE_LOADED,
-					data: json,
-					url,
-					pagination: getPaginationObject(json.total, numPerpage, page)
+			.then(
+				res => res.json(), 
+				err => {
+					console.log('An error occurded.', err)
+					dispatch({
+						type: DATA_TABLE_LOADE_ERROR,
+						ERROR: err
+					})
 				})
+			.then(json => {
+				if(!_.isEmpty(json))
+					return dispatch({
+						type: DATA_TABLE_LOADED,
+						data: json,
+						url,
+						pagination: getPaginationObject(json.total, numPerpage, page)
+					})
 			})
 	}
 }

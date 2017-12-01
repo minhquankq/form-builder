@@ -6,12 +6,10 @@ import _ from 'lodash'
 
 import TableCellTemplate from '../../services/tableCellTemplate'
 
-export default class DataTable extends Component {
+export default class RowSpanTable extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			filter: {},
-			isShowSubTable: {}
 		}
 	}
 
@@ -22,12 +20,6 @@ export default class DataTable extends Component {
 				headerDom.scroll({left: e.srcElement.scrollLeft})
 			}
 		});
-	}
-
-	showSubTable(index) {
-		let {isShowSubTable} = this.state
-		isShowSubTable[index] = !isShowSubTable[index];
-		this.setState({isShowSubTable})
 	}
 
 	handleSort(fieldName) {
@@ -54,10 +46,10 @@ export default class DataTable extends Component {
 									className={sortClassName} 
 									key={f.name}
 									onClick={this.handleSort.bind(this, f.name)}
-									style={{width: 200}}
+									style={{width: f.width}}
 								>{f.label}</th>
 			} else {
-				return <th key={f.name} style={{width: 200}}>{f.label}</th>
+				return <th key={f.name} style={{width: f.width}}>{f.label}</th>
 			}
 			
 		})
@@ -66,7 +58,7 @@ export default class DataTable extends Component {
 			<thead>
 				<tr>
 					{fieldsComponent}
-					<th style={{width: 200}}>Actions</th>
+					<th style={{width: 300}}>Actions</th>
 				</tr>
 			</thead>
 		)
@@ -74,47 +66,64 @@ export default class DataTable extends Component {
 
 	renderTableContent() {
 		let {isShowSubTable} = this.state
-		let {fields, data, hasSubTable, actionComponents} = this.props
+		let {fields, data, actionComponents, numOfColSpan = 0} = this.props
 		let fieldLength = fields.length + 1
-		let tableRowComponent = data.map((d, index) => {
-			let cellComponent = fields.map((f, index) => {
-				return (<td key={index} style={{width: 200}} className="datatable-cell">{this.cellTemplate(d, f)}</td>)
+
+		let groupData = {};
+		let tableRowComponent = []
+		if(numOfColSpan > 0) {
+			let colGroup = _.slice(fields, 0, numOfColSpan)
+			groupData = _.groupBy(data, d => {
+				return colGroup.map(c=> d[c.name]).join('#')
 			})
-			return (
-					[<tr key={index} onClick={this.showSubTable.bind(this, index)}>
-						{cellComponent}
-						<td style={{width: 200}}>
-							{actionComponents && actionComponents(d)}
-						</td>
-					</tr>,
-					(hasSubTable && isShowSubTable[index] === true) ? 
-					<tr key={'sub' + index}>
-						<td colSpan={fieldLength}>
-						<table size="sm">
-								<thead>
-								<tr>
-									<td>id</td>
-									<td>title</td>
-									<td>description</td>
-									<td>email</td>
-									<td>ola</td>
-								</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>id</td>
-										<td>title</td>
-										<td>description description</td>
-										<td>email@vng.com.vn</td>
-										<td>ola</td>
-									</tr>
-								</tbody>
-							</table>
-						</td>
-					</tr> : null
-					]
-			)
-		})
+
+			_.keys(groupData).map(key => {
+				let arr= groupData[key]
+				let length = arr.length
+				
+				tableRowComponent.push(arr.map((d, rowIndex) => {
+					let cellComponent = []
+					fields.forEach((f, colIndex) => {
+						if(rowIndex === 0 ) {
+							if(colIndex < numOfColSpan)
+								cellComponent.push((<td key={colIndex} rowSpan={length} style={{width: f.width}} className="datatable-cell">{this.cellTemplate(d, f)}</td>))
+							else {
+								cellComponent.push((<td key={colIndex} style={{width: f.width}} className="datatable-cell">{this.cellTemplate(d, f)}</td>))
+							}
+						} else {
+							if(colIndex >= numOfColSpan)
+								cellComponent.push((<td key={colIndex} style={{width: f.width}} className="datatable-cell">{this.cellTemplate(d, f)}</td>))
+						}
+					})
+					return (
+							<tr key={rowIndex}>
+								{cellComponent}
+								<td style={{width: 300}}>
+								{actionComponents && actionComponents(d)}
+								</td>
+							</tr>
+					)
+				}))
+			})
+
+
+		} else {
+			tableRowComponent = data.map((d, index) => {
+				let cellComponent = fields.map((f, index) => {
+					return (<td key={index} style={{width: 200}} className="datatable-cell">{this.cellTemplate(d, f)}</td>)
+				})
+				return (
+						<tr key={index} onClick={this.showSubTable.bind(this, index)}>
+							{cellComponent}
+							<td style={{width: 200}}>
+								<i onClick={()=>this.props.handleAction('edit', d)} className="btn fa fa-pencil table-row-action edit" />
+								<i onClick={()=>this.props.handleAction('delete', d)} className="btn fa fa-trash table-row-action delete" />
+							</td>
+						</tr>
+				)
+			})
+		}
+
 		return (
 			<tbody className="">
 				{tableRowComponent}
@@ -140,7 +149,7 @@ export default class DataTable extends Component {
 	}
 }
 
-DataTable.propTypes = {
+RowSpanTable.propTypes = {
 	data: PropTypes.array.isRequired,
 	fields: PropTypes.array.isRequired,
 	sortChange: PropTypes.func.isRequired,

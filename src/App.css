@@ -89,9 +89,7 @@
 }
 
 .table-row-action {
-  margin: 5px;
-  padding: 10px;
-  cursor: pointer;
+  margin: 0px 5px 0px 5px;
 }
 
 .table-row-action.delete {
@@ -104,7 +102,6 @@
 }
 
 .table-component{
-  /* box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2); */
   table-layout: fixed
 }
 
@@ -124,6 +121,10 @@
 .condition-label {
   display: flex;
   align-items: center;
+  border-right-width: 1px;
+  border-right-color: blue;
+  border-right-style: dotted;
+  margin: 15px 0px 15px 0px;
 }
 
 .filter-action-panel {
@@ -146,4 +147,9 @@
   display: inline;
   float: right;
   margin: 10px;
+}
+
+.datatable-cell {
+  overflow: hidden;
+  vertical-align: middle !important;
 }

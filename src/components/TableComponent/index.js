@@ -17,6 +17,7 @@ import ConfigField from './ConfigField';
 import Edit from './Edit';
 import AdvanceFilter from './AdvanceFilter'
 import SimpleFilter from './SimpleFilter';
+import RowSpanTable from './RowSpanTable';
 
 class TableComponent extends Component {
 	constructor(props) {
@@ -110,6 +111,7 @@ class TableComponent extends Component {
 	}
 
 	renderTableAndPagination() {
+		let {actionComponents} = this.props
 		let {data, fields} = this.props.data
 		let {showFields, sort} = this.state
 		// let tableComponent = null;
@@ -120,12 +122,22 @@ class TableComponent extends Component {
 		}
 		let tableComponent = (
 			<div>
-				<DataTable 
+				{/* <DataTable 
 					data={data || []} 
 					fields={fields || []}
 					sort={sort}
 					sortChange={this.handleSortChange.bind(this)}
 					handleAction={this.handleAction.bind(this)}
+					hasSubTable={false}
+					actionComponents={actionComponents}
+					/> */}
+				<RowSpanTable 
+					data={data || []} 
+					fields={fields || []}
+					sort={sort}
+					sortChange={this.handleSortChange.bind(this)}
+					actionComponents={actionComponents}
+					numOfColSpan={2}
 					/>
 				<TablePagination 
 					{...this.props.pagination} 

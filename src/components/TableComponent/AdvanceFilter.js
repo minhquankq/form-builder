@@ -25,7 +25,7 @@ class AdvanceFilter extends Component {
 		
 		this.state = {
 			data: {
-							'or': [{}]
+							'$or': [{}]
 						}
 		}
 	}
